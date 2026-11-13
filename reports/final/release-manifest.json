@@ -1,0 +1,89 @@
+{
+  "name": "Cuepoint",
+  "packageName": "cuepoint-library",
+  "version": "1.1.0",
+  "referenceRepository": "https://github.com/Airdox/iste-rekordbox",
+  "referenceCommitSha": "88e8bdf66b2d731961924e85494307b7f3572bc0",
+  "referenceCommitDate": "2026-11-13 00:00:07 +0100",
+  "reconstructionCommitSha": "workspace-directory",
+  "generatedAtUtc": "2026-11-13T00:02:00Z",
+  "overallStatus": "PARTIAL_SUCCESS",
+  "windowsRelease": {
+    "targetArtifact": "release/Cuepoint-1.1.0-Windows-x64.exe",
+    "status": "BLOCKED",
+    "reason": "Build host is Linux x86_64 (gVisor container); Windows PyInstaller (UIAutomationCore.dll, comtypes, sqlcipher3) and electron-builder --win portable require windows-latest runner (.github/workflows/quality-gate.yml).",
+    "workflowArtifactAlignmentFixed": true
+  },
+  "realRekordboxStatus": "UNVERIFIED_REAL_REKORDBOX",
+  "verifiedGates": {
+    "typescriptBuildAndLint": "PASS",
+    "frontendUnitAndV8Coverage": {
+      "status": "PASS",
+      "filesPassed": 4,
+      "testsPassed": 27,
+      "testsFailed": 0,
+      "statementsPct": 97.0,
+      "branchesPct": 92.1,
+      "functionsPct": 97.01,
+      "linesPct": 98.33,
+      "criticalModules100Pct": ["src/api.ts", "src/camelot-wheel.tsx", "src/metadata.ts", "src/components.tsx"]
+    },
+    "electronMainPreloadTests": {
+      "status": "PASS",
+      "testsPassed": 4,
+      "testsFailed": 0,
+      "durationMs": 213.38
+    },
+    "pythonBackendSuites": {
+      "status": "PASS",
+      "unitLivePlaybackFilterCoverage": { "passed": 24, "skipped": 1, "failed": 0 },
+      "combinatorialStress": {
+        "cases": 5000,
+        "matchedTracksVerified": 2066942,
+        "correctnessPct": 100.0,
+        "avgMs": 6.073,
+        "p95Ms": 29.38,
+        "maxMs": 48.888,
+        "over50MsCount": 0
+      }
+    },
+    "pythonAstMutation": {
+      "status": "PARTIAL_SUCCESS",
+      "totalMutants": 207,
+      "killed": 167,
+      "provenEquivalent": 19,
+      "unexplainedSurvivors": 21,
+      "unexplainedReason": "All 21 survivors reside strictly inside 'if np is not None:' branches unexecutable in sandbox due to missing numpy package; 100% of executable non-equivalent mutants killed.",
+      "rawScorePct": 80.68,
+      "effectiveScorePct": 88.83
+    },
+    "strykerFrontendMutation": {
+      "status": "BLOCKED",
+      "reason": "@stryker-mutator/core not installed in container environment"
+    },
+    "pythonBranchCoverage": {
+      "status": "BLOCKED",
+      "reason": "pytest/pytest-cov not installed in container Python environment"
+    },
+    "liveChromiumE2E": {
+      "status": "PASS",
+      "url": "http://127.0.0.1:3000",
+      "viewport": "1440x900",
+      "stepsPassed": 6,
+      "stepsFailed": 0,
+      "consoleErrors": 0,
+      "pageErrors": 0,
+      "screenshots": [
+        "reports/evidence/reconstruction/live-match.png",
+        "reports/evidence/reconstruction/filter-studio.png",
+        "reports/evidence/reconstruction/set-builder.png",
+        "reports/evidence/reconstruction/hardware-modal.png"
+      ]
+    }
+  },
+  "syntheticFixture": {
+    "path": "build/synthetic_test_master.db",
+    "tracks": 15500,
+    "sizeBytes": 2520064
+  }
+}

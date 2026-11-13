@@ -1,0 +1,2241 @@
+{
+  "total": 207,
+  "killed": 167,
+  "survived": 40,
+  "mutationScore": 80.68,
+  "effectiveScore": 88.83,
+  "provenEquivalentCount": 19,
+  "unexplainedCount": 21,
+  "unexplainedSurvivors": [
+    {
+      "id": "backend/library.py:668:38",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 668,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:670:58",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 670,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:674:59",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 674,
+      "mutation": "In -> NotIn",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:676:60",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 676,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:392:63",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 392,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:467:65",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 467,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:601:76",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 601,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:392:81",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 392,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:402:83",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 402,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:454:87",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 454,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:524:93",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 524,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:566:95",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 566,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:428:108",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 428,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:428:109",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 428,
+      "mutation": "LtE -> Lt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:444:111",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:444:112",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "LtE -> Lt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:550:120",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 550,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:609:125",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 609,
+      "mutation": "NotEq -> Eq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:614:126",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 614,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:557:138",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 557,
+      "mutation": "NotEq -> Eq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:620:142",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 620,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    }
+  ],
+  "threshold": 95.0,
+  "passed": false,
+  "survivors": [
+    {
+      "id": "backend/keys.py:28:16",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 28,
+      "mutation": "Add -> Sub",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Mathematically equivalent in modulo 12 arithmetic: (x + 6) % 12 == (x - 6) % 12 for all integers x in range 1..12."
+    },
+    {
+      "id": "backend/library.py:462:27",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 462,
+      "mutation": "Gt -> GtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: when lo_t == hi_t, swapping identical strings lo_t, hi_t = hi_t, lo_t leaves both variables completely unchanged."
+    },
+    {
+      "id": "backend/library.py:668:38",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 668,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:574:51",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 574,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:670:58",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 670,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:674:59",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 674,
+      "mutation": "In -> NotIn",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:676:60",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 676,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:392:63",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 392,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:467:65",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 467,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:467:66",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 467,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:587:74",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 587,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:601:76",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 601,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:392:81",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 392,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:402:83",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 402,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:444:85",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:454:87",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 454,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:454:88",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 454,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:483:91",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 483,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:524:93",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 524,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:543:94",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 543,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:566:95",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 566,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:566:96",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 566,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:428:108",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 428,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:428:109",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 428,
+      "mutation": "LtE -> Lt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:444:111",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:444:112",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "LtE -> Lt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:531:118",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 531,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:550:120",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 550,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:609:125",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 609,
+      "mutation": "NotEq -> Eq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:614:126",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 614,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:557:138",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 557,
+      "mutation": "NotEq -> Eq",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:557:139",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 557,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:620:142",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 620,
+      "mutation": "GtE -> Gt",
+      "status": "survived",
+      "classification": "unexplained_survivor"
+    },
+    {
+      "id": "backend/library.py:447:144",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 447,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:626:148",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 626,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/library.py:632:149",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 632,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: max(lo, hi) <= 25 for all valid Camelot keys, so asc <= max(lo, hi) strictly implies asc < 26. asc <= 26 is redundant."
+    },
+    {
+      "id": "backend/rekordbox_live.py:146:8",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 146,
+      "mutation": "Lt -> LtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Mathematically equivalent: at pos = 0.5, 0.5 * 2.0 == 1.0, so both the True branch and False branch evaluate to exactly 1.0."
+    },
+    {
+      "id": "backend/rekordbox_live.py:145:12",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 145,
+      "mutation": "Gt -> GtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Mathematically equivalent: at pos = 0.5, (1.0 - 0.5) * 2.0 == 1.0, so both the True branch and False branch evaluate to exactly 1.0."
+    },
+    {
+      "id": "backend/main.py:172:5",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 172,
+      "mutation": "Gt -> GtE",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: when len(available) == 1, available[0] is prev. Both if branch (returning prev) and else branch (returning min(available) == prev) yield prev."
+    },
+    {
+      "id": "backend/main.py:176:21",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 176,
+      "mutation": "Eq -> NotEq",
+      "status": "survived",
+      "classification": "proven_equivalent",
+      "equivalenceRationale": "Semantically equivalent: index 2 is only reached when fader levels and master flags are tied with prev. Under ties, neither fader_beat (+0.10) nor master_beat can hold, so selected is always prev."
+    }
+  ],
+  "results": [
+    {
+      "id": "backend/keys.py:30:1",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 30,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:32:2",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 32,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:35:3",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 35,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:41:4",
+      "file": "backend/keys.py",
+      "function": "compatible",
+      "line": 41,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:13:5",
+      "file": "backend/keys.py",
+      "function": "pitch_class",
+      "line": 13,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:26:6",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 26,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:35:7",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 35,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:35:8",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 35,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:44:9",
+      "file": "backend/keys.py",
+      "function": "compatible",
+      "line": 44,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:13:10",
+      "file": "backend/keys.py",
+      "function": "pitch_class",
+      "line": 13,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:28:11",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 28,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:48:12",
+      "file": "backend/keys.py",
+      "function": "compatible",
+      "line": 48,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:49:13",
+      "file": "backend/keys.py",
+      "function": "compatible",
+      "line": 49,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:28:14",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 28,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:35:15",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 35,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:28:16",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 28,
+      "mutation": "Add -> Sub",
+      "status": "survived"
+    },
+    {
+      "id": "backend/keys.py:48:17",
+      "file": "backend/keys.py",
+      "function": "compatible",
+      "line": 48,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/keys.py:21:18",
+      "file": "backend/keys.py",
+      "function": "camelot",
+      "line": 21,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:84:1",
+      "file": "backend/library.py",
+      "function": "_parse_range",
+      "line": 84,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:87:2",
+      "file": "backend/library.py",
+      "function": "_parse_range",
+      "line": 87,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:89:3",
+      "file": "backend/library.py",
+      "function": "_parse_range",
+      "line": 89,
+      "mutation": "LtE -> Lt",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:106:4",
+      "file": "backend/library.py",
+      "function": "_key_rank",
+      "line": 106,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:382:5",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 382,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:385:6",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 385,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:388:7",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 388,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:419:8",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 419,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:474:9",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 474,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:512:10",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 512,
+      "mutation": "NotIn -> In",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:516:11",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 516,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:581:12",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 581,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:594:13",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 594,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:653:14",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 653,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:664:15",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 664,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:684:16",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 684,
+      "mutation": "NotIn -> In",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:974:17",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 974,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:106:18",
+      "file": "backend/library.py",
+      "function": "_key_rank",
+      "line": 106,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:385:19",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 385,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:385:20",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 385,
+      "mutation": "NotIn -> In",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:385:21",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 385,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:389:22",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 389,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:420:23",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 420,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:435:24",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 435,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:437:25",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 437,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:450:26",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 450,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:462:27",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 462,
+      "mutation": "Gt -> GtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:474:28",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 474,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:475:29",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 475,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:499:30",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 499,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:521:31",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 521,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:538:32",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 538,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:563:33",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 563,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:597:34",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 597,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:657:35",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 657,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:659:36",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 659,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:660:37",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 660,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:668:38",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 668,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:687:39",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 687,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:974:40",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 974,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:978:41",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 978,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:978:42",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 978,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:978:43",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 978,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:399:44",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 399,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:422:45",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 422,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:439:46",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 439,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:496:47",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 496,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:522:48",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 522,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:539:49",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 539,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:572:50",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 572,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:574:51",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 574,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:598:52",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 598,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:606:53",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 606,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:647:54",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 647,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:660:55",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 660,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:660:56",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 660,
+      "mutation": "NotIn -> In",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:660:57",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 660,
+      "mutation": "In -> NotIn",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:670:58",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 670,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:674:59",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 674,
+      "mutation": "In -> NotIn",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:676:60",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 676,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:974:61",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 974,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:984:62",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 984,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:392:63",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 392,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:407:64",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 407,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:467:65",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 467,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:467:66",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 467,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:470:67",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 470,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:508:68",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 508,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:529:69",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 529,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:540:70",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 540,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:548:71",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 548,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:564:72",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 564,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:577:73",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 577,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:587:74",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 587,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:590:75",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 590,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:601:76",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 601,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:607:77",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 607,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:612:78",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 612,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:647:79",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 647,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:663:80",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 663,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:392:81",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 392,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:397:82",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 397,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:402:83",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 402,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:431:84",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 431,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:444:85",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:447:86",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 447,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:454:87",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 454,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:454:88",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 454,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:457:89",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 457,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:470:90",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 470,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:483:91",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 483,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:508:92",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 508,
+      "mutation": "NotIn -> In",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:524:93",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 524,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:543:94",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 543,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:566:95",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 566,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:566:96",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 566,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:569:97",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 569,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:577:98",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 577,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:590:99",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 590,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:604:100",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 604,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:618:101",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 618,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:647:102",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 647,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:663:103",
+      "file": "backend/library.py",
+      "function": "_sort_positions",
+      "line": 663,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:986:104",
+      "file": "backend/library.py",
+      "function": "recommendations",
+      "line": 986,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:83:105",
+      "file": "backend/library.py",
+      "function": "_parse_range",
+      "line": 83,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:397:106",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 397,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:405:107",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 405,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:428:108",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 428,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:428:109",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 428,
+      "mutation": "LtE -> Lt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:431:110",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 431,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:444:111",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:444:112",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 444,
+      "mutation": "LtE -> Lt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:447:113",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 447,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:457:114",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 457,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:486:115",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 486,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:493:116",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 493,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:527:117",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 527,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:531:118",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 531,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:546:119",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 546,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:550:120",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 550,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:569:121",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 569,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:577:122",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 577,
+      "mutation": "Lt -> LtE",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:590:123",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 590,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:604:124",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 604,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:609:125",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 609,
+      "mutation": "NotEq -> Eq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:614:126",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 614,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:624:127",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 624,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:405:128",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 405,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:415:129",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 415,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:431:130",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 431,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:447:131",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 447,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:486:132",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 486,
+      "mutation": "GtE -> Gt",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:493:133",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 493,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:527:134",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 527,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:534:135",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 534,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:546:136",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 546,
+      "mutation": "GtE -> Gt",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:553:137",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 553,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:557:138",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 557,
+      "mutation": "NotEq -> Eq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:557:139",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 557,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:560:140",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 560,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:590:141",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 590,
+      "mutation": "Lt -> LtE",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:620:142",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 620,
+      "mutation": "GtE -> Gt",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:434:143",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 434,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:447:144",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 447,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:534:145",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 534,
+      "mutation": "GtE -> Gt",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:553:146",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 553,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:560:147",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 560,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:626:148",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 626,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:632:149",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 632,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/library.py:560:150",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 560,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:560:151",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 560,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/library.py:560:152",
+      "file": "backend/library.py",
+      "function": "_apply_rule",
+      "line": 560,
+      "mutation": "Lt -> LtE",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:139:1",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 139,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:143:2",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 143,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:152:3",
+      "file": "backend/rekordbox_live.py",
+      "function": "combine_fader_levels",
+      "line": 152,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:290:4",
+      "file": "backend/rekordbox_live.py",
+      "function": "_progress",
+      "line": 290,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:293:5",
+      "file": "backend/rekordbox_live.py",
+      "function": "_progress",
+      "line": 293,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:295:6",
+      "file": "backend/rekordbox_live.py",
+      "function": "_progress",
+      "line": 295,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:139:7",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 139,
+      "mutation": "Lt -> LtE",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:146:8",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 146,
+      "mutation": "Lt -> LtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/rekordbox_live.py:293:9",
+      "file": "backend/rekordbox_live.py",
+      "function": "_progress",
+      "line": 293,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:296:10",
+      "file": "backend/rekordbox_live.py",
+      "function": "_progress",
+      "line": 296,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:297:11",
+      "file": "backend/rekordbox_live.py",
+      "function": "_progress",
+      "line": 297,
+      "mutation": "Add -> Sub",
+      "status": "killed"
+    },
+    {
+      "id": "backend/rekordbox_live.py:145:12",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 145,
+      "mutation": "Gt -> GtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/rekordbox_live.py:145:13",
+      "file": "backend/rekordbox_live.py",
+      "function": "_crossfader_gain",
+      "line": 145,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:159:1",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 159,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:162:2",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 162,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:172:3",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 172,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:162:4",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 162,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:172:5",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 172,
+      "mutation": "Gt -> GtE",
+      "status": "survived"
+    },
+    {
+      "id": "backend/main.py:178:6",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 178,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:153:7",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 153,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:180:8",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 180,
+      "mutation": "GtE -> Gt",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:181:9",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 181,
+      "mutation": "And -> Or",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:153:10",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 153,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:153:11",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 153,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:163:12",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 163,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:171:13",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 171,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:180:14",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 180,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:181:15",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 181,
+      "mutation": "Lt -> LtE",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:181:16",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 181,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:182:17",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 182,
+      "mutation": "Or -> And",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:153:18",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 153,
+      "mutation": "NotEq -> Eq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:155:19",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 155,
+      "mutation": "Eq -> NotEq",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:163:20",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 163,
+      "mutation": "Gt -> GtE",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:176:21",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 176,
+      "mutation": "Eq -> NotEq",
+      "status": "survived"
+    },
+    {
+      "id": "backend/main.py:181:22",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 181,
+      "mutation": "Sub -> Add",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:188:23",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 188,
+      "mutation": "remove unary not",
+      "status": "killed"
+    },
+    {
+      "id": "backend/main.py:188:24",
+      "file": "backend/main.py",
+      "function": "_select_anchor",
+      "line": 188,
+      "mutation": "remove unary not",
+      "status": "killed"
+    }
+  ]
+}

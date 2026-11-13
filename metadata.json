@@ -1,0 +1,6 @@
+{
+  "name": "Cuepoint",
+  "description": "Rekordbox library and live match console with read-only database protection, nested metadata filtering, Camelot harmonic wheel, and set builder.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

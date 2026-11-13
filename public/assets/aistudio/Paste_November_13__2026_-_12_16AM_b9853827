@@ -1,0 +1,2108 @@
+# MASTER-IMPLEMENTIERUNGSAUFTRAG
+## Vollständiger, reproduzierbarer Nachbau von Airdox/iste-rekordbox (Cuepoint)
+
+### 0. Rolle, Auftrag und oberste Direktive
+
+Du bist ein autonom arbeitender Senior-Software-Engineering-Orchestrator mit Verantwortung für Architektur, Implementierung, Testautomatisierung, Sicherheitsprüfung, Qualitätssicherung, Windows-Deployment und technische Dokumentation.
+
+Deine Aufgabe ist es, das folgende GitHub-Repository systematisch zu analysieren und als vollständig funktionsfähige Windows-Desktop-Anwendung nachzubauen:
+
+**Referenz-Repository:** https://github.com/Airdox/iste-rekordbox
+
+Projektname im Referenzcode: `Cuepoint`
+
+Referenzversion zum Zeitpunkt der Auftragserstellung: `1.1.0`
+
+**Ziel ist funktionale und visuelle Gleichwertigkeit, nicht nur die Nachbildung einzelner Screenshots.**
+
+Der Nachbau muss:
+
+- Die technische Architektur des Originals rekonstruieren.
+- Alle tatsächlich implementierten Funktionen berücksichtigen.
+- Dieselben relevanten Benutzerinteraktionen unterstützen.
+- Rekordbox-Datenbanken zuverlässig und ausschließlich lesend verarbeiten.
+- Verschachtelte Metadatenfilter korrekt berechnen.
+- Große Musikbibliotheken performant verarbeiten.
+- Mit Rekordbox und unterstützter DJ-Hardware interagieren.
+- Eine möglichst originalgetreue Benutzeroberfläche bereitstellen.
+- Automatisierte und reale funktionale Prüfungen bestehen.
+- Als ausführbare Windows-x64-Anwendung ausgeliefert werden.
+- Vollständig dokumentiert und reproduzierbar gebaut werden können.
+
+Die Funktionen müssen nicht intern bitidentisch implementiert sein. Architekturabweichungen sind jedoch zu begründen und dürfen keine funktionalen, sicherheitsrelevanten oder wesentlichen visuellen Unterschiede verursachen.
+
+**Ein erfolgreicher Build ist kein Beweis für ein funktionierendes Produkt. Ein bestandener Unit-Test ist kein Beweis für eine funktionierende Benutzeroberfläche. Ein Screenshot ist kein Beweis für korrektes Anwendungsverhalten.**
+
+Alle drei Nachweise sind erforderlich.
+
+---
+
+# 1. Repository-Fixierung und Bestandsaufnahme
+
+## 1.1 Referenzstand verbindlich festlegen
+
+Klonen:
+
+```bash
+git clone https://github.com/Airdox/iste-rekordbox.git
+cd iste-rekordbox
+git rev-parse HEAD
+```
+
+Halte fest:
+
+- Vollständige Commit-SHA
+- Aktueller Branch
+- Commit-Datum
+- Projektversion
+- Lockfile-Versionen
+- Dateibaum
+- GitHub-Actions-Workflows
+- Tests
+- Referenzbilder
+- Vorhandene Dokumentation
+
+Der Nachbau ist gegen diese festgelegte Referenz zu prüfen. Änderungen am ursprünglichen Repository während der Bearbeitung dürfen nicht stillschweigend in den Vergleich einfließen.
+
+Wenn das Repository nicht zugänglich ist, darf der Agent keine nicht vorhandenen Inhalte erfinden. Er muss die Einschränkung dokumentieren und ausschließlich mit nachweislich verfügbaren Quellen arbeiten.
+
+## 1.2 Sämtliche Dateien untersuchen
+
+Die Untersuchung muss mindestens diese Bereiche erfassen:
+
+```text
+.github/workflows/
+backend/
+electron/
+src/
+tests/
+scripts/
+referenzbilder/
+
+README.md
+package.json
+package-lock.json
+requirements.txt
+requirements-dev.txt
+pyproject.toml
+tsconfig.json
+vite.config.ts
+vitest.config.ts
+stryker.config.mjs
+```
+
+Untersuche insbesondere:
+
+```text
+backend/
+  fixtures.py
+  keys.py
+  library.py
+  live.py
+  main.py
+  rekordbox_live.py
+  sources.py
+
+electron/
+  main.cjs
+  preload.cjs
+
+src/
+  api.ts
+  camelot-wheel.tsx
+  components.tsx
+  filter-view.tsx
+  hardware-modal.tsx
+  live-view.tsx
+  main.tsx
+  metadata.ts
+  set-view.tsx
+  style.css
+  track-table.tsx
+```
+
+Die tatsächliche Struktur im fixierten Commit ist maßgeblich.
+
+## 1.3 Architektur- und Implementierungsbericht
+
+Erzeuge vor größeren Implementierungsarbeiten:
+
+```text
+docs/reconstruction/
+  01-repository-inventory.md
+  02-architecture.md
+  03-feature-matrix.md
+  04-api-contracts.md
+  05-database-contracts.md
+  06-ui-specification.md
+  07-test-strategy.md
+  08-risk-register.md
+  09-implementation-plan.md
+```
+
+Für jede Funktion dokumentieren:
+
+1. Sichtbares Verhalten
+2. Auslösende Benutzeraktion
+3. Zuständige Frontend-Komponente
+4. IPC-Aufruf
+5. Backend-Dispatcher
+6. Ausgeführte Geschäftslogik
+7. Datenquelle
+8. Zustandsveränderung
+9. Fehlerbehandlung
+10. Vorhandene Tests
+11. Noch fehlende Nachweise
+
+Unterscheide zwingend zwischen:
+
+- Tatsächlich implementiert
+- Dokumentiert, aber noch nicht implementiert
+- Teilweise implementiert
+- Nur simuliert
+- Nur auf synthetischen Daten geprüft
+- Mit echter Rekordbox-Installation geprüft
+- Nicht überprüfbar
+
+Eine Funktion darf erst nach entsprechender Prüfung als vollständig gelten.
+
+---
+
+# 2. Multi-Agenten-Organisation
+
+## 2.1 Orchestrator
+
+Ein zentraler Orchestrator übernimmt die Gesamtverantwortung.
+
+Er muss:
+
+- Aufgaben aus der Repository-Analyse ableiten.
+- Abhängigkeiten zwischen Aufgaben erkennen.
+- Konkrete Ziele definieren.
+- Arbeitspakete priorisieren.
+- Bereits vorhandene Agenten und deren Fähigkeiten erfassen.
+- Geeignete Agenten auswählen.
+- Parallele Bearbeitung unabhängiger Aufgaben ermöglichen.
+- Schnittstellen zwischen den Agenten vereinbaren.
+- Fortschritt kontrollieren.
+- Testergebnisse unabhängig überprüfen lassen.
+- Fehlgeschlagene Arbeiten zur Korrektur zurückgeben.
+- Wiederholungsschleifen begrenzen.
+- Technische Blockaden eskalieren.
+- Ergebnisse integrieren.
+- Den endgültigen Qualitätsstatus feststellen.
+
+**Kein Subagent darf seine eigene Arbeit allein endgültig abnehmen.**
+
+## 2.2 Spezialisierte Rollen
+
+Der Orchestrator soll vorhandene Agenten wiederverwenden und nur bei Bedarf zusätzliche Rollen anlegen.
+
+| Rolle | Zuständigkeit |
+|---|---|
+| Architektur-Agent | Bestandsaufnahme, Komponenten, Datenflüsse |
+| Datenbank-Agent | Rekordbox-Formate, SQLCipher, Snapshots |
+| Query-Agent | Filterlogik, Sortierung, Facetten, Performance |
+| Frontend-Agent | React, Benutzeroberfläche, Zustandsverwaltung |
+| Live-Agent | Pro DJ Link, Windows UI Automation |
+| Electron-Agent | IPC, Python-Prozess, Sicherheit |
+| Test-Agent | Unit-, Integrations- und E2E-Tests |
+| Visual-QA-Agent | Screenshots, echte GUI, Referenzvergleich |
+| Build-Agent | PyInstaller, electron-builder, Windows-Release |
+| Security-Agent | Read-only-Schutz, IPC, Datenvalidierung |
+| Review-Agent | Unabhängige Bewertung und Abnahme |
+
+Agenten müssen nicht zwingend eigenständige Prozesse sein. Falls die Umgebung keine echten Subagenten unterstützt, sind dieselben Rollen als klar getrennte Arbeitsschritte mit unabhängiger Review-Phase abzubilden.
+
+## 2.3 Verbindlicher Aufgabenvertrag
+
+Jedes Arbeitspaket muss folgende Angaben enthalten:
+
+```yaml
+task_id: CP-001
+title: "Beispielaufgabe"
+owner: "Zugewiesener Agent"
+
+goal: "Eindeutig überprüfbares Ziel"
+
+inputs:
+  - "Referenzdateien"
+  - "Technische Anforderungen"
+
+dependencies:
+  - "Vorherige Arbeitspakete"
+
+deliverables:
+  - "Implementierung"
+  - "Tests"
+  - "Dokumentation"
+
+acceptance:
+  - "Messbares Kriterium 1"
+  - "Messbares Kriterium 2"
+
+evidence:
+  - "Testprotokoll"
+  - "Screenshot"
+  - "Build-Artefakt"
+
+max_attempts: 3
+
+status: pending
+```
+
+Ziele müssen überprüfbar und technisch präzise sein.
+
+„Die Benutzeroberfläche sieht gut aus“ ist kein gültiges Abnahmekriterium.
+
+„Nach dem Klicken auf Live Match wird die Ansicht geöffnet, die gewählte Tonart dargestellt, die Ergebnisliste aktualisiert und die korrekte Filterabfrage ausgeführt“ ist ein überprüfbares Kriterium.
+
+## 2.4 Kontrollierte Korrekturschleife
+
+Für jedes Arbeitspaket:
+
+```text
+TASK ERSTELLEN
+      |
+      v
+AGENT IMPLEMENTIERT
+      |
+      v
+AUTOMATISIERTE TESTS
+      |
+      v
+UNABHÄNGIGER REVIEW
+      |
+      +---- BESTANDEN ----> ABNAHME
+      |
+      +---- FEHLER
+                |
+                v
+       FEHLER KLASSIFIZIEREN
+                |
+                v
+       KONKRETE KORREKTUR
+                |
+                v
+         ERNEUT TESTEN
+```
+
+Regeln:
+
+- Normalerweise maximal drei Korrekturversuche pro identischer Fehlerursache.
+- Nach jedem Versuch muss sich entweder Code, Test oder Diagnose nachweislich geändert haben.
+- Wiederholte Ausführung desselben fehlgeschlagenen Befehls ohne neue Erkenntnis ist verboten.
+- Nach zwei erfolglosen Korrekturen ist eine alternative Lösung zu untersuchen.
+- Nach drei erfolglosen Versuchen wird das Problem an den Orchestrator eskaliert.
+- Der Orchestrator kann den Auftrag aufteilen, neu zuweisen oder als blockiert markieren.
+- Infrastrukturfehler sind von Implementierungsfehlern zu unterscheiden.
+- Unbekannte Fehler dürfen nicht durch Abschalten von Tests verdeckt werden.
+
+Die maximale Wiederholungszahl darf nur nach dokumentierter neuer Erkenntnis und begründeter Entscheidung des Orchestrators angehoben werden.
+
+## 2.5 Abbruchkriterien
+
+Ein Arbeitspaket wird beendet, wenn:
+
+**Erfolg:**
+Alle Abnahmekriterien sind nachweislich erfüllt.
+
+**Blockiert:**
+Eine externe Abhängigkeit fehlt, beispielsweise eine echte Rekordbox-Installation, ein Hardwareplayer oder eine Windows-GUI-Sitzung.
+
+**Technischer Stillstand:**
+Die zulässigen Korrekturen haben keine überprüfbare Verbesserung erreicht.
+
+**Sicherheitsstopp:**
+Die Implementierung gefährdet Originaldaten, verarbeitet Zugangsdaten unsicher oder führt unzulässige Schreiboperationen aus.
+
+**Architekturkonflikt:**
+Eine Anforderung ist mit bestehenden technischen Randbedingungen nicht vereinbar.
+
+Ein blockierter Teil darf nicht den unbeteiligten Rest des Projekts unnötig stoppen. Er muss jedoch im abschließenden Ergebnis sichtbar bleiben.
+
+---
+
+# 3. Zielarchitektur
+
+## 3.1 Technologie
+
+Orientiere dich an der Referenzarchitektur:
+
+Frontend:
+
+- React 19
+- TypeScript 5.9
+- Vite 7
+- TanStack React Table
+- TanStack Virtual
+- Lucide Icons
+- CSS / Tailwind, soweit tatsächlich verwendet
+- Inter und IBM Plex Mono
+
+Desktop:
+
+- Electron
+- Sicheres Preload-Skript
+- Context Isolation
+- Node Integration deaktiviert
+- Sandboxing
+- Kontrollierte IPC-Kommunikation
+
+Backend:
+
+- Python 3.11
+- SQLite
+- NumPy
+- pyrekordbox
+- rekordbox-pdb
+- psutil
+- comtypes auf Windows
+- SQLCipher
+- PyInstaller
+
+Die jeweils festgelegten Versionen aus den Manifesten und Lockfiles haben Vorrang.
+
+## 3.2 Prozessarchitektur
+
+Verwende die folgende Kommunikationsstruktur:
+
+```text
+React UI
+   |
+   | window.cuepoint.request()
+   v
+Electron Preload
+   |
+   | Whitelist-IPC
+   v
+Electron Main
+   |
+   | JSON-RPC über stdin/stdout
+   v
+Python Worker
+   |
+   +-- Library
+   +-- Database Sources
+   +-- Filter Engine
+   +-- Camelot Engine
+   +-- Pro DJ Link
+   +-- Local Rekordbox
+```
+
+Jede Anfrage erhält eine eindeutige Request-ID.
+
+Das Antwortformat lautet sinngemäß:
+
+```json
+{
+  "id": 42,
+  "result": {}
+}
+```
+
+Fehler:
+
+```json
+{
+  "id": 42,
+  "error": "Beschreibender Fehler"
+}
+```
+
+Zusätzliche Anforderungen:
+
+- Eindeutige Zuordnung paralleler Anfragen
+- Konfigurierbare Timeouts
+- Geregeltes Beenden des Python-Prozesses
+- Fehlerbehandlung bei Worker-Abstürzen
+- Keine unkontrollierten IPC-Befehle
+- Keine willkürlichen Betriebssystemkommandos aus dem Renderer
+- Keine sensiblen Informationen in Logs
+- Kein Vermischen von Logmeldungen und JSON-RPC auf stdout
+
+Die ursprüngliche Schnittstelle umfasst mindestens:
+
+```text
+open
+demoLibrary
+query
+detail
+interfaces
+usb
+linkStart
+linkStop
+demoLink
+live
+bindMedia
+unbindMedia
+rekordboxTransport
+```
+
+Die genauen Parameter und Antworttypen sind aus der Implementierung zu rekonstruieren und als verbindliche Verträge zu dokumentieren.
+
+---
+
+# 4. Rekordbox-Datenbankintegration
+
+## 4.1 Unterstützte Formate
+
+Implementiere mindestens:
+
+```text
+master.db
+exportLibrary.db
+export.pdb
+```
+
+Berücksichtige:
+
+- Rekordbox-Masterbibliothek
+- OneLibrary auf USB-Medien
+- Ältere Device-Library-Formate
+- Unterschiedliche Datenbankschemata
+- Fehlende optionale Metadatenspalten
+- Medienwechsel
+- Nicht vorhandene Dateien
+- SQLCipher-Verschlüsselung
+- Unterschiedliche Pfadkonventionen
+
+## 4.2 Absoluter Originalschutz
+
+Die Originaldatenbank darf unter keinen Umständen verändert werden.
+
+Erlaubt:
+
+```text
+Originaldatei öffnen mit rb
+        |
+        v
+Konsistenten Snapshot erstellen
+        |
+        v
+SHA-256 und Dateistand prüfen
+        |
+        v
+Temporäre Kopie öffnen
+        |
+        v
+Metadaten lesen
+        |
+        v
+In-Memory-Abfrageindex erzeugen
+```
+
+Verboten:
+
+- Originaldatenbank aktualisieren
+- Originaldatenbank migrieren
+- Original-WAL löschen
+- Originaldatenbank reindizieren
+- Tabellen oder Datensätze im Original verändern
+- Schreibende SQLite-Verbindung zur Quelle öffnen
+- Original-Metadaten ohne ausdrückliche separate Freigabe ändern
+
+Testnachweis:
+
+Vor und nach sämtlichen Tests sind Hashwerte der Originaldateien zu vergleichen.
+
+Hashidentität ist eine notwendige Sicherheitskontrolle; zusätzlich sind Schreibzugriffe durch Rechte, Dateiöffnung und Architektur zu verhindern.
+
+## 4.3 Snapshot-Verfahren
+
+Die Referenz verwendet:
+
+- Binäres Lesen
+- Temporäres Verzeichnis
+- SHA-256
+- Dateigrößenprüfung
+- Änderungszeitprüfung
+- Berücksichtigung vorhandener `-wal`- und `-journal`-Dateien
+- Begrenzte Wiederholungsversuche
+- Entschlüsselung ausschließlich anhand der Kopie
+
+Rekonstruiere dieses Verhalten.
+
+Bei gleichzeitigen Änderungen der Quelle muss eine inkonsistente Kopie erkannt und verworfen werden.
+
+Ein inkonsistenter Snapshot darf niemals als gültig gelten.
+
+## 4.4 SQLCipher
+
+Bei verschlüsselten Dateien:
+
+1. Datenbankformat erkennen.
+2. SQLCipher-Verfügbarkeit prüfen.
+3. Den passenden, rechtmäßig verfügbaren Schlüsselmechanismus verwenden.
+4. Entschlüsselung auf temporärer Kopie versuchen.
+5. Schema validieren.
+6. Daten lesen.
+7. Verbindung schließen.
+
+Passwörter oder Schlüssel dürfen niemals in Logs, Fehlerausgaben oder Diagnoseartefakten erscheinen.
+
+Schlägt die Entschlüsselung fehl, muss eine nachvollziehbare Fehlermeldung erscheinen. Der Agent darf nicht auf erfundene Trackdaten ausweichen.
+
+## 4.5 Schema-Normalisierung
+
+Unterstütze eine einheitliche Trackrepräsentation für mindestens:
+
+```text
+id
+title
+artist
+album
+genre
+label
+key_raw
+key
+bpm
+year
+created
+added
+comment
+rating
+seconds
+bytes
+bitrate
+sample_rate
+plays
+analysis
+path
+original_id
+isrc
+```
+
+Bei Master-Datenbanken sind insbesondere folgende Tabellen zu untersuchen:
+
+```text
+djmdContent
+djmdArtist
+djmdGenre
+djmdKey
+djmdAlbum
+djmdLabel
+```
+
+Die Implementierung muss die tatsächlichen Spaltennamen aus dem Referenzcode übernehmen.
+
+Fehlende optionale Felder ergeben definierte Nullwerte statt Programmabstürze.
+
+BPM-Felder mit hundertfacher Skalierung müssen korrekt umgerechnet werden.
+
+Bewertungen müssen auf die sichtbare 0-bis-5-Skala normalisiert werden.
+
+## 4.6 Pfade
+
+Implementiere:
+
+- Windows-Laufwerksbuchstaben
+- USB-Laufwerke
+- Relative und absolute Pfade
+- Unterschiedliche Verzeichnisstrukturen
+- Normalisierung von Trennzeichen
+- Schutz vor Path Traversal
+- Fehlende Analyse-Dateien
+- Sichere Behandlung nicht erreichbarer Medien
+
+Die in der Referenz verwendete Startsuche unter `E:\PIONEER\Master` ist als Default zu berücksichtigen.
+
+**Dieser Default darf nicht zur Voraussetzung für eine funktionierende Anwendung werden.**
+
+Die Datenquelle muss über die GUI auswählbar sein und nach Neustart korrekt wiederhergestellt werden.
+
+---
+
+# 5. Performanceorientierte Bibliotheks-Engine
+
+## 5.1 Grundprinzip
+
+Die Filter-Engine darf nicht einfach durch eine ineffiziente JavaScript-Schleife über alle Tracks ersetzt werden.
+
+Rekonstruiere das leistungsorientierte Konzept der Referenz:
+
+- SQLite im Arbeitsspeicher
+- Normalisierte Trackdaten
+- NumPy-Arrays
+- Boolesche Filtermasken
+- Vorkalkulierte Such- und Sortierindizes
+- Caching
+- Effiziente Facetten
+- Stabile Sortierungen
+
+Der synthetische Referenzdatensatz enthält 15.500 Tracks.
+
+Die Architektur muss auch größere Bibliotheken sinnvoll verarbeiten können.
+
+## 5.2 Filteroperatoren
+
+Implementiere:
+
+```text
+contains
+eq
+neq
+gte
+lte
+gt
+lt
+range
+empty
+```
+
+Beachte, dass die sichtbare Frontend-Auswahl nicht zwingend jeden intern implementierten Operator anbietet.
+
+Kläre diesen Unterschied anhand des Quellcodes.
+
+Die Operationen müssen abhängig vom Datentyp korrekt funktionieren:
+
+- Text
+- Zahl
+- Datum beziehungsweise Datumsrepräsentation
+- Camelot-Tonart
+- ID
+
+## 5.3 Verschachtelte Filtergruppen
+
+Unterstütze folgende Struktur:
+
+```json
+{
+  "groupLogic": "AND",
+  "groups": [
+    {
+      "mode": "OR",
+      "rules": [
+        {
+          "id": "genre",
+          "op": "eq",
+          "value": "Techno"
+        },
+        {
+          "id": "genre",
+          "op": "eq",
+          "value": "Hardgroove"
+        }
+      ]
+    },
+    {
+      "mode": "AND",
+      "rules": [
+        {
+          "id": "bpm",
+          "op": "range",
+          "value": "134..142"
+        },
+        {
+          "id": "rating",
+          "op": "gte",
+          "value": "4"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Die Auswertung muss semantisch korrekt sein:
+
+```text
+(Genre = Techno OR Genre = Hardgroove)
+AND
+(BPM zwischen 134 und 142)
+AND
+(Bewertung >= 4)
+```
+
+Teste:
+
+- AND innerhalb einer Gruppe
+- OR innerhalb einer Gruppe
+- AND zwischen Gruppen
+- OR zwischen Gruppen
+- Leere Gruppen
+- Fehlende Werte
+- Ungültige Zahlen
+- Doppelte Regeln
+- Widersprüchliche Regeln
+- Sehr große Ergebnismengen
+- Leere Ergebnismengen
+
+## 5.4 Mehrstufige Sortierung
+
+Die Anwendung benötigt beliebig kombinierbare, durch die UI unterstützte Sortierstufen.
+
+Beispiel:
+
+```text
+1. Genre aufsteigend
+2. BPM absteigend
+3. Bewertung absteigend
+4. Titel aufsteigend
+```
+
+Anforderungen:
+
+- Stabile Reihenfolge
+- Deterministische Ergebnisse
+- Definierte Behandlung von Nullwerten
+- Umkehrbare Sortierrichtung
+- Drag-and-drop-Reihenfolge
+- Tastaturbedienung mit Alt + Pfeiltasten
+- Eindeutiger Tie-Breaker
+- Kein Datenverlust beim Sortieren
+
+Prüfe die Semantik der Referenz-Sortierung anhand der vorhandenen Tests.
+
+## 5.5 Facetten
+
+Implementiere dynamische:
+
+- Genre-Häufigkeiten
+- Camelot-Key-Häufigkeiten
+- BPM-Histogramme
+- Ergebniszähler
+
+Die Referenz liefert stufenbezogene Zähler und verwendet BPM-Buckets.
+
+Prüfe ausdrücklich, an welcher Stelle des Filterprozesses die Facetten berechnet werden.
+
+Ein nachträglich auf den finalen Ergebnissen gebildeter Zähler kann funktional falsch sein, wenn die Referenz vorherige Filterstufen berücksichtigt.
+
+## 5.6 Suchnormalisierung
+
+Die Textsuche muss berücksichtigen:
+
+- Groß-/Kleinschreibung
+- Unicode-Normalisierung
+- Diakritische Zeichen
+- Mehrere Suchbegriffe
+- Leere Texte
+- Sonderzeichen
+
+Teste insbesondere die Normalisierung von Umlauten, Akzenten und unterschiedlichen Unicode-Darstellungen.
+
+## 5.7 Performance
+
+Referenzziel:
+
+**Abfragen im Bereich von höchstens 50 ms für den vorgesehenen synthetischen Referenzdatensatz und die definierten Vergleichsfälle.**
+
+Die Messung muss unterscheiden zwischen:
+
+- Reiner Backend-Query-Zeit
+- IPC-Latenz
+- UI-Rendering
+- Gesamtreaktionszeit
+
+Ein einzelner schneller Aufruf genügt nicht.
+
+Erstelle reproduzierbare Messreihen mit Warm-up, mehreren Wiederholungen, Perzentilen und dokumentierter Hardware.
+
+Das 50-ms-Ziel darf nicht durch künstliches Entfernen komplexer Testfälle erreicht werden.
+
+---
+
+# 6. Camelot- und Harmonic-Matching-Engine
+
+## 6.1 Tonartnormalisierung
+
+Unterstütze:
+
+- Camelot-Schreibweisen `1A` bis `12A`
+- Camelot-Schreibweisen `1B` bis `12B`
+- Klassische Dur-Tonarten
+- Klassische Moll-Tonarten
+- Kreuz- und Be-Vorzeichen
+- Unterschiedliche gebräuchliche Textnotationen
+
+Die Referenz enthält eigene Umrechnungslogik.
+
+Diese ist als Ausgangspunkt zu verwenden.
+
+## 6.2 Harmonische Beziehungen
+
+Mindestens:
+
+- Gleiche Tonart
+- Gleiche Camelot-Nummer, anderer Modus
+- Direkter Camelot-Nachbar minus eins
+- Direkter Camelot-Nachbar plus eins
+
+Beispiel:
+
+```text
+Referenz: 8A
+
+Kompatible Keys:
+8A
+8B
+7A
+9A
+```
+
+Die Reihenfolge der Darstellung und Kennzeichnung soll der Referenz entsprechen.
+
+## 6.3 Interaktives Camelot-Wheel
+
+Rekonstruiere das kreisförmige SVG-Element mit:
+
+- 12 Segmenten pro Ring
+- Zwei Ringen
+- Farbcodierung
+- Aktuellem Key
+- Markierten kompatiblen Keys
+- Aktiv ausgewählten Keys
+- Einzelauswahl
+- Mehrfachauswahl mit Strg/Shift
+- Tastaturbedienung
+- Accessible Labels
+- Auto-Follow
+- Option zum Einschließen des aktuellen Keys
+
+Die Segmente müssen echte Benutzeraktionen auslösen.
+
+Eine statische Grafik ist nicht akzeptabel.
+
+## 6.4 Testfälle
+
+Teste alle 24 Camelot-Tonarten.
+
+Insbesondere:
+
+- Umlauf von `12A` nach `1A`
+- Umlauf von `1B` nach `12B`
+- Relativer A/B-Wechsel
+- Fehlerhafte Tonartangaben
+- Fehlende Tonart
+- Mehrfachauswahl
+- Wechsel der Live-Referenz
+
+---
+
+# 7. Live Match und DJ-Hardware
+
+## 7.1 Betriebsarten
+
+Die Referenz kennt mehrere Wege zur Ermittlung des aktuellen Tracks.
+
+Diese müssen getrennt modelliert werden:
+
+**Modus A: Demo**
+
+Verwendet synthetische oder vorhandene Bibliothekstracks zur Simulation.
+
+**Modus B: Pro DJ Link**
+
+Verwendet Netzwerkpakete und Hardwarestatus.
+
+**Modus C: Lokales Rekordbox**
+
+Verwendet Windows UI Automation, um Informationen aus einem laufenden Rekordbox-Fenster zu gewinnen.
+
+Ein Demoergebnis darf nicht als echte Hardwareintegration gekennzeichnet werden.
+
+## 7.2 Pro DJ Link
+
+Rekonstruiere die tatsächlich implementierte Statuspaketverarbeitung.
+
+Die Referenz verwendet unter anderem:
+
+```text
+UDP 50002
+UDP 50000
+```
+
+Implementiere:
+
+- Netzwerkschnittstellen-Erkennung
+- Passive Statusüberwachung
+- Optionalen Ankündigungsmodus
+- Player-Erkennung
+- Track-ID-Ermittlung
+- Track-Quelle
+- Slot-Ermittlung
+- BPM
+- Wiedergabestatus
+- Master-Status
+- Timeout veralteter Deckinformationen
+- Kontrolliertes Beenden der Netzwerküberwachung
+
+Die vorhandene Paketstruktur ist anhand von `backend/live.py` und den referenzierten Protokollunterlagen nachzuvollziehen.
+
+Keine unbekannten Paketinhalte erfinden.
+
+Der Ankündigungsmodus darf nur auf einer ausdrücklich ausgewählten Schnittstelle aktiviert werden.
+
+## 7.3 USB- und SD-Medien
+
+Implementiere Zuordnung anhand von:
+
+```text
+Player
+Slot
+Medien-Datenbank
+Track-ID
+```
+
+Unterstütze:
+
+- SD
+- USB 1
+- USB 2
+- OneLibrary
+- Legacy Device Library
+
+Bei Medienwechsel muss die Zuordnung aktualisiert werden können.
+
+Teste:
+
+- Zwei Player mit derselben Track-ID
+- Unterschiedliche Medien mit derselben Track-ID
+- Entferntes USB-Medium
+- Ungültiger Slot
+- Nicht unterstütztes Schema
+- Fehlende Medien-Datenbank
+
+Eine Track-ID alleine ist nicht zwangsläufig global eindeutig.
+
+## 7.4 Lokale Rekordbox-Integration
+
+Untersuche und rekonstruiere `backend/rekordbox_live.py`.
+
+Erforderlich sind:
+
+- Erkennung des laufenden Rekordbox-Prozesses
+- Auffinden des relevanten Hauptfensters
+- Windows UI Automation
+- Auslesen von Deck-Anzeigen
+- Tracktitel
+- Artist
+- BPM
+- Aktueller Key
+- Wiedergabeposition, soweit verfügbar
+- Playing-Status
+- Channel-Fader
+- Crossfader
+- Master-Erkennung
+- Zuordnung der sichtbaren Werte zum richtigen Deck
+
+Die Funktion muss mit unterschiedlichen Fenstergrößen und UI-Zuständen getestet werden.
+
+Das Parsing darf sich nicht ausschließlich auf einen zufällig beobachteten Fensterausschnitt stützen.
+
+Untersuche die im Referenzcode vorhandene Positions- und Nachbarschaftslogik für UI-Automation-Elemente.
+
+## 7.5 Fader
+
+Unterscheide:
+
+- Channel-Fader
+- Crossfader
+- Effektiven Pegel
+- Aktives Deck
+- Master-Deck
+
+Die Berechnung muss anhand der Referenzfunktionen für Faderkombination geprüft werden.
+
+Tests:
+
+- Fader ganz unten
+- Fader auf Mittelstellung
+- Fader ganz oben
+- Crossfader links
+- Crossfader Mitte
+- Crossfader rechts
+- Unterschiedliche Deckanzahlen
+- Nicht verfügbare Faderwerte
+
+Fehlende Werte sind als unbekannt zu behandeln, nicht als willkürliche Null.
+
+## 7.6 Track-Matching
+
+Implementiere eine zuverlässige Zuordnung zwischen:
+
+```text
+Rekordbox Live Deck
+      |
+      v
+Angezeigte Metadaten
+      |
+      v
+Normalisierter Identitätsvergleich
+      |
+      v
+Kandidatenliste
+      |
+      v
+BPM- und Dauerprüfung
+      |
+      v
+Eindeutige Bibliothekszuordnung
+```
+
+Die Referenz verwendet insbesondere normalisierte Kombinationen aus Titel und Artist sowie ergänzende BPM- und Dauerprüfungen.
+
+Bei mehreren verbleibenden Kandidaten darf nicht blind ein Track ausgewählt werden.
+
+Die Zuordnung ist als nicht eindeutig zu melden.
+
+## 7.7 Track-Aktionen für Rekordbox
+
+Rekonstruiere die unterstützten Aktionen des vorhandenen Transportmechanismus, insbesondere:
+
+```text
+reveal
+deck1
+deck2
+```
+
+Prüfe im Quellcode die konkreten Voraussetzungen und tatsächlichen UI-Aktionen.
+
+Sicherheitsanforderungen:
+
+- Keine unkontrollierten Tastatursequenzen
+- Kein Senden an unbekannte Anwendungen
+- Kontrolle des aktiven Zielfensters
+- Fehler bei nicht laufendem Rekordbox
+- Kein verdecktes Manipulieren der Bibliotheksdatenbank
+
+---
+
+# 8. Live-Match-Empfehlungslogik
+
+Die Anwendung muss auf Basis eines Referenztracks passende Anschlusstracks ermitteln können.
+
+Kriterien:
+
+- BPM
+- Camelot-Key
+- Harmonic-Matching
+- Genre
+- Bewertung
+- Spielhäufigkeit
+- Ausschluss des aktuellen Tracks
+- Individuelle Filterbedingungen
+
+BPM-Toleranzen müssen im jeweiligen Kontext korrekt angewandt werden.
+
+Unterscheide die relativen Toleranzeinstellungen in der Live-Oberfläche von absoluten BPM-Abständen in internen Hilfsfunktionen.
+
+Die Ergebnisse müssen deterministisch und nachvollziehbar sortiert werden.
+
+Für jeden Treffer soll das UI die relevanten Eigenschaften klar anzeigen.
+
+Eine Empfehlung muss anhand ihrer Daten erklärt werden können.
+
+---
+
+# 9. Benutzeroberfläche
+
+## 9.1 Grundanforderung
+
+Die Oberfläche soll die Referenz in Layout, Bedienabläufen, Informationshierarchie und Verhalten möglichst genau nachbilden.
+
+Verwende die vorhandenen Referenzen:
+
+```text
+referenzbilder/111111.png
+
+referenzbilder/
+  airdox_rekordbox_ui_prototyp.html
+```
+
+Zusätzlich ist die tatsächlich gerenderte Anwendung als Referenz zu verwenden.
+
+Eine HTML-Referenz oder ein Screenshot allein hat keinen Vorrang vor der funktionierenden Referenzanwendung.
+
+## 9.2 Hauptansichten
+
+Die App enthält mindestens:
+
+```text
+Live Match
+Filter
+Set-Builder
+```
+
+Diese Ansichten müssen mit konsistentem Anwendungszustand arbeiten.
+
+Ein ausgewählter Track darf beim Wechsel zwischen Ansichten nicht ohne Grund verloren gehen.
+
+## 9.3 Live-Match-Ansicht
+
+Rekonstruiere:
+
+- Deck-Radar
+- Aktuellen Track
+- Titel und Artist
+- Aktuelle BPM
+- Tonart
+- Camelot-Wheel
+- Harmonische Nachbarn
+- Auto-Follow
+- BPM-Filter
+- Genre-Filter
+- Bewertung
+- Spielhäufigkeit
+- Ergebnisliste
+- Sortierauswahl
+- Hardware-Verbindungsdialog
+- Demo-Bedienung
+- Trackdetails
+- Waveform-Anzeige
+
+Ein Wechsel des aktiven Decks muss die richtigen Daten aktualisieren.
+
+## 9.4 Filter-Ansicht
+
+Rekonstruiere:
+
+- Linke Filter-Navigation
+- Schnellfilter
+- Genre-Auswahl
+- BPM-Grenzen
+- Camelot-Auswahl
+- Filter-Designer
+- AND/OR-Gruppen
+- Hinzufügen und Entfernen von Regeln
+- Gespeicherte Presets
+- Suchfeld
+- Mehrstufige Sortierung
+- Track-Tabelle
+- Dynamische Ergebniszähler
+- Spaltenverwaltung
+
+Vorhandene Presets umfassen unter anderem:
+
+```text
+Techno / Peak
+Melodic Warmup
+Selten gespielt
+```
+
+Custom-Presets müssen persistent speicherbar sein.
+
+## 9.5 Track-Tabelle
+
+Die Referenz verwendet:
+
+```text
+@tanstack/react-table
+@tanstack/react-virtual
+```
+
+Rekonstruiere:
+
+- Virtualisierte Zeilen
+- Effizientes Scrollen
+- Anpassbare Spalten
+- Sortierbare Spalten
+- Tastaturbedienung
+- Ausgewählten Track
+- Kontextmenü
+- Track-Aktionen
+- Sternbewertungen
+- Camelot-Badges
+- Trackdauer
+- Numerische Metadaten
+- Anzeige des Setlistenstatus
+
+Die Referenz verwendet eine Zeilenhöhe von ungefähr 40 px und eine Kopfzeilenhöhe von ungefähr 33 px.
+
+Diese Maße sind im visuellen Vergleich zu validieren.
+
+## 9.6 Wichtige Unterscheidung bei Waveforms
+
+Die Referenz enthält sowohl echte Analysevorschauen als auch synthetisch generierte Waveform-Darstellungen.
+
+Insbesondere erzeugt `MiniWave` eine deterministische dekorative Wellenform anhand der Track-ID.
+
+`LiveWaveform` kann echte übergebene Analysedaten darstellen, verwendet bei fehlenden Samples aber ebenfalls eine synthetische Ersatzdarstellung.
+
+**Der Nachbau muss echte und synthetische Waveforms unterscheiden.**
+
+Eine künstliche Waveform darf nicht als verifizierte Rekordbox-Analyse ausgegeben werden.
+
+Die echte Vorschau wird aus vorhandenen Rekordbox-Analysedateien gewonnen, soweit diese verfügbar und lesbar sind.
+
+## 9.7 Set-Builder
+
+Rekonstruiere:
+
+- Track zur Setliste hinzufügen
+- Track entfernen
+- Reihenfolge ändern
+- Drag-and-drop
+- Gesamtlaufzeit
+- BPM-Spanne
+- Anzahl harmonisch kompatibler Übergänge
+- Trackdetails
+- Setliste löschen
+- CSV-Export
+- M3U8-Export
+- Rekordbox-XML-Export
+
+Exporte müssen mit synthetischen Testdaten sowie realistischen Pfaden geprüft werden.
+
+## 9.8 Persistenz
+
+Speichere entsprechend der Referenz:
+
+- Spaltenlayout
+- Eigene Filterpresets
+- Setlisten
+- Letzte Datenquelle
+- Sonstige tatsächlich persistierte Einstellungen
+
+Untersuche die vorhandenen localStorage-Schlüssel und Electron-Konfigurationsdateien.
+
+Teste das Verhalten nach einem vollständigen Neustart.
+
+## 9.9 Bedienbarkeit
+
+Erforderlich:
+
+- Funktionierende Buttons
+- Keine toten Menüpunkte
+- Keine bloßen UI-Platzhalter
+- Korrekte Modals
+- Escape zum Schließen
+- Sichtbarer Ladezustand
+- Verständliche Fehlermeldungen
+- Tastaturbedienung
+- Korrekte Scrollbereiche
+- Kein Abschneiden wichtiger Elemente
+- Benutzbare Oberfläche bei Mindestfenstergröße
+
+---
+
+# 10. Sicherheit und Fehlerbehandlung
+
+## 10.1 Electron
+
+Mindestens:
+
+```javascript
+contextIsolation: true
+sandbox: true
+nodeIntegration: false
+```
+
+Weitere Anforderungen:
+
+- Whitelist für erlaubte IPC-Methoden
+- Kontrolle des aufrufenden Fensters
+- Keine unkontrollierte Navigation
+- Keine ungeprüften externen URLs
+- Kein Zugriff des Renderers auf beliebige Dateisystemfunktionen
+- Kein ungesicherter Node-Zugriff
+- Strukturierte Parametervalidierung
+- Definierte Fehlerbehandlung
+
+## 10.2 Python-Worker
+
+Implementiere:
+
+- Startkontrolle
+- Fehlerkanal
+- Abbruchbehandlung
+- Timeouts
+- Ressourcenfreigabe
+- Graceful Shutdown
+- Beendigung laufender Netzwerk-Listener
+- Schließen sämtlicher Datenbankverbindungen
+
+## 10.3 Fehlerklassen
+
+Mindestens:
+
+```text
+SOURCE_NOT_FOUND
+SOURCE_UNREADABLE
+SNAPSHOT_INCONSISTENT
+SQLCIPHER_UNAVAILABLE
+DATABASE_DECRYPT_FAILED
+DATABASE_SCHEMA_INVALID
+TRACK_NOT_FOUND
+TRACK_AMBIGUOUS
+ANALYSIS_FILE_MISSING
+PYTHON_WORKER_UNAVAILABLE
+IPC_TIMEOUT
+NETWORK_INTERFACE_UNAVAILABLE
+DJ_LINK_PORT_UNAVAILABLE
+REKORDBOX_NOT_RUNNING
+REKORDBOX_UI_UNAVAILABLE
+MEDIA_NOT_FOUND
+```
+
+Diese Fehlercodes sind eine Zielanforderung des Nachbaus und nicht als bereits vollständig vorhandene Referenzimplementierung zu verstehen.
+
+---
+
+# 11. Tests und Qualitätsstrategie
+
+## 11.1 Grundsatz
+
+Die bestehende Teststruktur ist Ausgangspunkt für den Nachbau.
+
+Der Referenzcode enthält unter anderem:
+
+```text
+tests/test_backend_coverage.py
+tests/test_combinatorial_stress.py
+tests/test_filter_groups.py
+tests/test_live.py
+tests/test_readonly.py
+tests/test_rekordbox_playback.py
+tests/generate_synthetic_db.py
+tests/electron-smoke.cjs
+tests/electron/main.test.mjs
+tests/frontend/
+```
+
+Die tatsächlichen Tests müssen gelesen und auf ihre Aussagekraft geprüft werden.
+
+Tests dürfen nicht einfach übernommen werden, wenn sie Fehler aus der Referenz reproduzieren.
+
+## 11.2 Python-Tests
+
+Mindestens:
+
+- Datenbankerkennung
+- Snapshot-Konsistenz
+- Read-only
+- SQLCipher
+- Schema-Normalisierung
+- Trackidentität
+- Unicode-Suche
+- Filteroperatoren
+- Verschachtelte Filter
+- Facetten
+- Sortierungen
+- Camelot
+- Live-Protokoll
+- Matching
+- Empfehlungen
+- Fehlerbehandlung
+
+Ziel:
+
+**Mindestens 90 % Branch Coverage auf dem relevanten Backend-Code**, ergänzt um kritische Funktionsprüfungen.
+
+## 11.3 Frontend-Tests
+
+Nutze Vitest und React Testing Library.
+
+Prüfe:
+
+- Jede wichtige Benutzerinteraktion
+- Filter-Designer
+- Camelot-Wheel
+- Track-Tabelle
+- Sortierung
+- Kontextmenüs
+- Modals
+- Presets
+- Set-Builder
+- Exportfunktionen
+- Fehleranzeigen
+- Ladezustände
+
+Ziel:
+
+Mindestens 90 % globale relevante Coverage.
+
+Kritische Logikpfade müssen vollständig durch konkrete Assertions geprüft werden.
+
+## 11.4 Kombinatorische Tests
+
+Erzeuge eine synthetische Rekordbox-Bibliothek mit mindestens 15.500 Tracks.
+
+Prüfe mindestens 100.000 Kombinationen aus:
+
+- Genre
+- BPM
+- Tonart
+- Bewertung
+- Jahr
+- Playcount
+- Suchbegriffen
+- AND/OR-Gruppen
+- Sortierung
+
+Verwende eine unabhängige Referenzberechnung als Oracle.
+
+Die Referenzberechnung darf nicht dieselbe Filterfunktion aufrufen, die gerade getestet werden soll.
+
+Vergleiche:
+
+- Trefferzahl
+- Vollständige Track-ID-Menge
+- Reihenfolge
+- Facetten
+- Zähler
+- Grenzwerte
+
+## 11.5 Mutationstests
+
+Verwende geeignete Mutationstests für Python und TypeScript.
+
+Zielwert des Referenz-Quality-Gates:
+
+**Mindestens 95 % Mutation Score für die definierten, ausführbaren Mutanten.**
+
+Dokumentiere:
+
+- Erzeugte Mutanten
+- Erkannte Mutanten
+- Überlebende Mutanten
+- Fehlerhafte Mutanten
+- Nicht ausführbare Mutanten
+- Ausschlüsse mit Begründung
+
+Ein hoher Mutation Score darf nicht durch willkürlichen Ausschluss kritischer Module erkauft werden.
+
+## 11.6 Electron-Integration
+
+Teste:
+
+- Worker-Start
+- Worker-Absturz
+- IPC-Timeout
+- Mehrere parallele Requests
+- Ungültige Methoden
+- Ungültige Parameter
+- Fensterschließen
+- Neustart
+- Datenquellenwechsel
+- Speicherpersistenz
+
+## 11.7 Echte GUI-Tests – verbindliches Abnahme-Gate
+
+**Die tatsächliche Anwendung muss gestartet und über ihre sichtbare GUI bedient werden.**
+
+Soweit Computer Use, Playwright, Windows UI Automation oder eine vergleichbare Desktop-Automatisierung verfügbar sind:
+
+1. Referenzanwendung starten.
+2. Nachbau starten.
+3. Identische Testdaten laden.
+4. Fenster auf identische Größe bringen.
+5. Identische Benutzeraktionen ausführen.
+6. Zustände vergleichen.
+7. Screenshots erstellen.
+8. Abweichungen dokumentieren.
+9. Fehler beheben.
+10. Tests wiederholen.
+
+Vergleiche nicht nur Screenshots.
+
+Vergleiche auch:
+
+- Aktiven Tab
+- Auswahlzustände
+- Filterparameter
+- Tabelleninhalte
+- Trefferzahlen
+- Sortierreihenfolge
+- Kontextmenüs
+- Persistenz
+- Ladezustände
+- Fehlermeldungen
+
+Ein Mockup genügt nicht.
+
+Ein isolierter Browser-Test genügt nicht für die vollständige Electron-Abnahme.
+
+## 11.8 Echte Rekordbox-Prüfung
+
+Wenn Rekordbox verfügbar ist, muss die KI es tatsächlich öffnen und bedienen.
+
+Testablauf:
+
+```text
+Rekordbox starten
+      |
+      v
+Bibliothek öffnen
+      |
+      v
+Track auswählen
+      |
+      v
+Track in Deck laden
+      |
+      v
+Cuepoint starten
+      |
+      v
+Deckstatus auslesen
+      |
+      v
+Metadaten vergleichen
+      |
+      v
+Track wechseln
+      |
+      v
+Auto-Follow prüfen
+```
+
+Zusätzlich, soweit im Testsystem möglich:
+
+- Wiedergabe starten und stoppen
+- BPM verändern
+- Master-Deck wechseln
+- Channel-Fader bewegen
+- Crossfader bewegen
+- Deck wechseln
+- Rekordbox-Fenstergröße ändern
+
+Jeder Live-Wert muss gegen den beobachteten Rekordbox-Zustand geprüft werden.
+
+Wenn echte Rekordbox nicht verfügbar ist, muss die Prüfung ausdrücklich als:
+
+`UNVERIFIED_REAL_REKORDBOX`
+
+ausgewiesen werden.
+
+Synthetische Tests dürfen diese Kennzeichnung nicht ersetzen.
+
+## 11.9 Screenshot-Evidenz
+
+Speichere mindestens:
+
+```text
+reports/evidence/
+  reference/
+  reconstruction/
+  comparisons/
+  failures/
+  gui-actions.json
+  environment.json
+```
+
+Jeder Vergleich benötigt:
+
+- Screenshot der Referenz
+- Screenshot des Nachbaus
+- Fensterausmaße
+- Skalierungsfaktor
+- Testdaten-Identität
+- Testaktion
+- Erwarteter Zustand
+- Beobachteter Zustand
+- Testergebnis
+
+Bei visuellen Fehlern sind relevante Bereiche zu kennzeichnen.
+
+## 11.10 Anti-Schein-Erfolgs-Regel
+
+Folgende Verhaltensweisen sind verboten:
+
+- Tests kommentarlos deaktivieren
+- Assertions entfernen, um Tests grün zu bekommen
+- Erfolgreiche UI-Aktionen simulieren, ohne Backend-Wirkung
+- Dummy-Daten als echte Daten ausgeben
+- Test-Screenshots als echte Screenshots ausgeben
+- Build-Artefakte behaupten, die nicht existieren
+- Fehlende Hardwareprüfungen verschweigen
+- Performancezahlen ohne tatsächliche Messung melden
+- Coverage-Werte aus unterschiedlichen oder veralteten Runs vermischen
+
+---
+
+# 12. Windows-Build und GitHub Actions
+
+## 12.1 Zielartefakt
+
+Baue eine portable Windows-x64-Anwendung.
+
+Referenzformat:
+
+```text
+Cuepoint-{version}-Windows-x64.exe
+```
+
+Die Anwendung muss ohne separat manuell gestarteten Python-Server laufen.
+
+## 12.2 Python-Paketierung
+
+Verwende PyInstaller entsprechend der Referenzarchitektur.
+
+Prüfe:
+
+- Python-Runtime
+- Native Bibliotheken
+- NumPy
+- SQLCipher
+- pyrekordbox
+- rekordbox-pdb
+- comtypes
+- Windows UI Automation
+- Sämtliche benötigten Ressourcen
+
+Eine native Bibliothek, die auf dem Entwickler-PC vorhanden ist, darf nicht einfach im Build fehlen.
+
+## 12.3 Electron-Paketierung
+
+Prüfe:
+
+- Electron Main Process
+- Preload
+- React-Build
+- Python-Executable
+- Ressourcenzugriff im Paket
+- Korrekte Dateipfade
+- Nutzerprofil
+- Fehlerprotokolle
+- Portable Ausführung
+
+## 12.4 CI/CD
+
+Orientiere dich an:
+
+```text
+.github/workflows/quality-gate.yml
+```
+
+Gewünschte Stufen:
+
+```text
+1. Build & Static Checks
+2. Unit & Branch Tests
+3. Combinatorial Stress Tests
+4. Electron Integration & UI
+5. Coverage & Mutation Gate
+6. Windows Release
+```
+
+Die Release-Stufe darf nur starten, wenn die vorherigen automatisierten Gates erfolgreich sind.
+
+Prüfe die vollständige Workflow-Konfiguration kritisch.
+
+Insbesondere müssen folgende mögliche Fehlerquellen untersucht werden:
+
+- PyInstaller-Pfade
+- Python-Virtual-Environment
+- Tatsächlicher Name der gebauten EXE
+- Portable-EXE versus `win-unpacked`
+- Artefaktpfade
+- Existenz aller benötigten Report-Dateien
+- Abhängigkeiten zwischen Jobs
+- Fehlende Coverage-Reports
+- Vorhandensein von mutierten Testartefakten
+- Powershell-Exitcodes
+- Native SQLCipher-Abhängigkeiten
+
+Die Referenz-Workflow-Datei nennt im Release-Smoke-Test einen `win-unpacked`-Pfad, während die Paketkonfiguration einen Portable-Build vorsieht.
+
+**Diese potenzielle Inkonsistenz ist explizit zu prüfen und gegebenenfalls zu korrigieren.**
+
+## 12.5 Release-Abnahme
+
+Vor Freigabe:
+
+- Frischer Windows-Build
+- Anwendung startet
+- Python-Worker startet
+- Testbibliothek lädt
+- Filter funktionieren
+- Set-Builder funktioniert
+- Exporte funktionieren
+- UI-Tests erfolgreich
+- Kritische Fehler ausgeschlossen
+- Sicherheitsprüfungen erfolgreich
+- Vollständige Build-Logs vorhanden
+
+Bei nicht verfügbarer echter Rekordbox darf ein automatisierter Build zwar erstellt werden, die Gesamtfreigabe als vollständig live-verifiziert ist jedoch untersagt.
+
+---
+
+# 13. Logging, Monitoring und Diagnose
+
+Implementiere ein zentralisiertes Diagnosesystem.
+
+Ereigniskategorien:
+
+```text
+STARTUP
+DATABASE
+SNAPSHOT
+SQLCIPHER
+LIBRARY
+QUERY
+FILTER
+SORT
+LIVE
+DJ_LINK
+REKORDBOX_UIA
+IPC
+ELECTRON
+EXPORT
+SECURITY
+TEST
+BUILD
+```
+
+Jeder Logeintrag soll mindestens enthalten:
+
+```text
+Timestamp
+Severity
+Subsystem
+Event
+Correlation-ID
+Duration
+Message
+```
+
+Keine Schlüssel, Passwörter oder privaten Dateiinhalte im Log.
+
+Wichtige Messwerte:
+
+- Datenbankladezeit
+- Snapshot-Dauer
+- Trackanzahl
+- Indexaufbauzeit
+- Filterdauer
+- Sortierdauer
+- UI-Renderdauer
+- IPC-Roundtrip
+- Live-Status-Latenz
+- Worker-Neustarts
+- Fehlerhäufigkeit
+
+Die Logs müssen sowohl während der Entwicklung als auch im gepackten Windows-Build nutzbar sein.
+
+---
+
+# 14. Umsetzungsphasen und Abhängigkeiten
+
+## Phase 1 – Referenzanalyse
+
+Ergebnisse:
+
+- Vollständiger Dateibaum
+- Fixierte Commit-SHA
+- Architekturdiagramm
+- Datenmodell
+- Feature-Matrix
+- API-Dokumentation
+- UI-Dokumentation
+- Testinventar
+- Risikoregister
+
+Gate:
+
+`REFERENCE_ANALYZED`
+
+## Phase 2 – Technische Basis
+
+Implementiere:
+
+- Projektstruktur
+- Abhängigkeiten
+- Electron
+- Preload
+- Python-Worker
+- IPC
+- Start/Stop
+- Logging
+- Fehlerbehandlung
+
+Gate:
+
+`CORE_BOOTSTRAP_PASSED`
+
+## Phase 3 – Datenbankintegration
+
+Implementiere:
+
+- Datenquellenwahl
+- Read-only-Snapshots
+- Schema-Normalisierung
+- SQLCipher
+- OneLibrary
+- Legacy PDB
+- Demo-Bibliothek
+
+Gate:
+
+`DATABASE_INTEGRATION_PASSED`
+
+## Phase 4 – Filter-Engine
+
+Implementiere:
+
+- Datenindizes
+- NumPy-Masken
+- Suchnormalisierung
+- Regeln
+- Gruppen
+- Sortierung
+- Facetten
+- Histogramme
+
+Gate:
+
+`QUERY_ENGINE_PASSED`
+
+## Phase 5 – Benutzeroberfläche
+
+Implementiere:
+
+- Grundlayout
+- Filteransicht
+- Track-Tabelle
+- Camelot-Wheel
+- Live-Ansicht
+- Set-Builder
+- Dialoge
+- Persistenz
+
+Gate:
+
+`UI_FUNCTIONAL_PASSED`
+
+## Phase 6 – Live-Integration
+
+Implementiere:
+
+- DJ Link
+- USB/SD-Mapping
+- Rekordbox UI Automation
+- Deck-Radar
+- Auto-Follow
+- Track-Matching
+- Faderstatus
+- Transportaktionen
+
+Gate:
+
+`LIVE_INTEGRATION_PASSED`
+
+## Phase 7 – Funktionale und visuelle Gleichwertigkeit
+
+Führe durch:
+
+- Automatisierte UI-Tests
+- Referenzvergleiche
+- Screenshot-Diffs
+- End-to-End-Tests
+- Reale Rekordbox-Tests, soweit verfügbar
+- Performanceprüfungen
+
+Gate:
+
+`FUNCTIONAL_PARITY_PASSED`
+
+## Phase 8 – Qualität und Release
+
+Führe durch:
+
+- Coverage
+- Mutationstests
+- Security-Prüfung
+- Windows-Build
+- Installationstest
+- Portable-EXE-Smoke-Test
+- Release-Dokumentation
+
+Gate:
+
+`RELEASE_READY`
+
+---
+
+# 15. Unabhängige Review- und Eskalationslogik
+
+Für jedes Gate muss der Orchestrator einen unabhängigen Reviewer einsetzen.
+
+Der Reviewer erhält:
+
+- Ursprüngliche Anforderungen
+- Referenzdateien
+- Tatsächliche Codeänderungen
+- Testberichte
+- Fehlerlogs
+- Screenshots
+- Performancewerte
+
+Er darf das Gate nur bestätigen, wenn die Nachweise die Anforderungen abdecken.
+
+Bei Nichterfüllung:
+
+```text
+REVIEW FAILED
+
+Task:
+Betroffene Anforderung:
+Erwartetes Verhalten:
+Beobachtetes Verhalten:
+Reproduktionsschritte:
+Fehlerursache:
+Erforderliche Korrektur:
+Erneuter Test:
+```
+
+Der Orchestrator weist die Korrektur dem zuständigen Agenten zu.
+
+Werden dabei Änderungen an einer gemeinsam verwendeten Schnittstelle erforderlich, müssen alle betroffenen Agenten informiert werden.
+
+Kein Agent darf heimlich einen API-Vertrag ändern.
+
+---
+
+# 16. Finale Abnahmebedingungen
+
+Das Projekt gilt erst dann als erfolgreich nachgebaut, wenn folgende Anforderungen erfüllt sind.
+
+### Funktionale Vollständigkeit
+
+- Alle referenzierten Hauptansichten implementiert
+- Sämtliche relevanten Benutzeraktionen funktionsfähig
+- Filter korrekt
+- Sortierungen korrekt
+- Camelot korrekt
+- Set-Builder funktionsfähig
+- Exporte funktionsfähig
+- Datenquellenwechsel funktionsfähig
+- Persistenz funktionsfähig
+
+### Technische Korrektheit
+
+- Keine Schreiboperationen an Originaldatenbanken
+- Sichere IPC-Kommunikation
+- Sauberes Prozessmanagement
+- Stabile Verarbeitung großer Bibliotheken
+- Konsistentes Fehlerverhalten
+
+### Qualität
+
+- Automatisierte Tests bestanden
+- Coverage-Ziele nachgewiesen
+- Mutationstests bestanden
+- Kombinatorische Prüfungen bestanden
+- Performance-Zielwerte nachgewiesen
+- Reale GUI-Prüfung durchgeführt
+- Verbleibende Abweichungen dokumentiert
+
+### Windows-Release
+
+- Portable EXE erzeugt
+- EXE auf geeignetem Windows-System gestartet
+- Backend im Paket funktionsfähig
+- Wichtige Bedienabläufe tatsächlich getestet
+- Logs und Testartefakte vorhanden
+
+### Live-Integration
+
+- Pro DJ Link mit passenden Testdaten überprüft
+- Lokales Rekordbox-Matching überprüft
+- Echte Rekordbox-Integration separat verifiziert oder ausdrücklich als nicht verifiziert gekennzeichnet
+- Keine Simulation als Echtnachweis ausgegeben
+
+---
+
+# 17. Abschließender Bericht
+
+Erstelle:
+
+```text
+reports/final/
+  reconstruction-report.md
+  feature-parity-matrix.md
+  test-results.md
+  performance-report.md
+  security-report.md
+  visual-comparison-report.md
+  live-verification-report.md
+  release-manifest.json
+  known-limitations.md
+```
+
+Der finale Bericht muss enthalten:
+
+1. Referenz-Commit-SHA
+2. Nachbau-Commit-SHA
+3. Verwendete Technologien
+4. Übersicht implementierter Features
+5. Übersicht nicht implementierter Features
+6. Testergebnisse
+7. Coverage
+8. Mutation Score
+9. Performancewerte
+10. Bildliche Referenzvergleiche
+11. Sicherheitsnachweise
+12. Windows-Build-Ergebnis
+13. Status der echten Rekordbox-Prüfung
+14. Offene Fehler
+15. Einschränkungen
+16. Abschließendes Urteil des Orchestrators
+
+Verwende für jede Anforderung einen der folgenden Statuswerte:
+
+```text
+PASS
+FAIL
+BLOCKED
+UNVERIFIED
+NOT_APPLICABLE
+```
+
+`NOT_APPLICABLE` erfordert eine konkrete technische Begründung.
+
+## Finaler Projektstatus
+
+```text
+SUCCESS
+```
+
+ist nur zulässig, wenn alle verbindlichen Abnahmekriterien nachweislich erfüllt sind.
+
+```text
+PARTIAL_SUCCESS
+```
+
+bedeutet, dass wesentliche Teile funktionieren, aber noch Einschränkungen bestehen.
+
+```text
+BLOCKED
+```
+
+bedeutet, dass eine erforderliche externe Voraussetzung fehlt.
+
+```text
+FAILED
+```
+
+bedeutet, dass zentrale Anforderungen nicht erfüllt wurden.
+
+---
+
+# 18. Ausführungsdirektive
+
+Beginne unmittelbar mit der vollständigen Analyse des fixierten Referenz-Repositories.
+
+Identifiziere zuerst vorhandene Agenten und ihre Zuständigkeiten.
+
+Erstelle anschließend den Abhängigkeitsgraphen und die Arbeitspakete.
+
+Delegiere voneinander unabhängige Aufgaben parallel.
+
+Bearbeite abhängige Aufgaben in der technisch notwendigen Reihenfolge.
+
+Verwende kontrollierte Implementierungs-, Test-, Review- und Korrekturschleifen.
+
+Erstelle in jeder Phase konkrete überprüfbare Artefakte.
+
+Vermeide unnötige Rückfragen, sofern die Antworten aus Repository, Tests oder Dokumentation hervorgehen.
+
+Behaupte niemals eine erfolgreiche Prüfung ohne Nachweis.
+
+**Die höchste Priorität liegt auf einem tatsächlich funktionierenden, originaldaten-sicheren und reproduzierbar getesteten Nachbau.**
+
+Der Orchestrator ist erst dann fertig, wenn ein ehrlicher, anhand konkreter Evidenz überprüfbarer Gesamtstatus vorliegt.
+
+**ENDE DES MASTER-AUFTRAGS**

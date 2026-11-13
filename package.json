@@ -1,0 +1,83 @@
+{
+  "name": "cuepoint-library",
+  "private": true,
+  "version": "1.1.0",
+  "description": "Rekordbox library and live match console",
+  "author": "Cuepoint",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "start": "node server.ts",
+    "electron": "electron .",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "clean": "rm -rf dist server.js",
+    "lint": "tsc --noEmit",
+    "test:frontend": "vitest run --coverage",
+    "test:electron": "c8 --all --include=\"electron/**\" --lines 90 --branches 90 --functions 90 --statements 90 --reporter=text --reporter=html --reporter=json --reporter=json-summary --reports-dir=reports/coverage-electron node --test tests/electron/main.test.mjs",
+    "test:ui": "node tests/electron-smoke.cjs",
+    "package:win": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-backend.ps1 && electron-builder --win portable"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@google/genai": "^2.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-table": "8.21.3",
+    "@tanstack/react-virtual": "^3.14.26",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.10",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^5.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "jsdom": "^31.0.0",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "vite": "^8.3.0",
+    "vitest": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.4.21",
+    "esbuild": "^0.25.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2",
+    "@types/express": "^4.17.21"
+  },
+  "build": {
+    "appId": "local.cuepoint.library",
+    "productName": "Cuepoint",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json",
+      "!node_modules/**"
+    ],
+    "extraResources": [
+      {
+        "from": "build/python/cuepoint-core",
+        "to": "core"
+      },
+      {
+        "from": "build/synthetic_test_master.db",
+        "to": "synthetic_test_master.db"
+      }
+    ],
+    "win": {
+      "target": "portable",
+      "signAndEditExecutable": false
+    },
+    "artifactName": "Cuepoint-${version}-Windows-${arch}.${ext}"
+  }
+}

@@ -807,4 +807,17 @@ describe('App (main.tsx)', () => {
     await waitFor(() => expect(reqSpy).toHaveBeenCalledWith('open', { path: undefined }))
     unmount()
   })
+
+  it('displays and updates the top-left viewport size overlay on resize', async () => {
+    const reqSpy = makeMockBridge()
+    render(<App />)
+    await waitFor(() => expect(reqSpy).toHaveBeenCalledWith('open', { path: undefined }))
+    const indicator = screen.getByTestId('viewport-indicator')
+    expect(indicator.textContent).toBe(`${window.innerWidth} × ${window.innerHeight}`)
+
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1440 })
+    Object.defineProperty(window, 'innerHeight', { writable: true, configurable: true, value: 900 })
+    fireEvent(window, new Event('resize'))
+    expect(indicator.textContent).toBe('1440 × 900')
+  })
 })

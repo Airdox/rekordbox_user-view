@@ -209,6 +209,7 @@ select {
 }
 
 #app {
+  position: relative;
   display: grid;
   grid-template-rows: 34px 55px 105px minmax(0, 1fr) 31px;
   height: 100vh;

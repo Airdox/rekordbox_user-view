@@ -181,6 +181,18 @@ export function App() {
   const [modal, setModal] = useState<ActiveModal>(null)
   const [presetNameInput, setPresetNameInput] = useState('')
   const [activeSideNav, setActiveSideNav] = useState('all')
+  const [viewport, setViewport] = useState(() => ({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  }))
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewport({ width: window.innerWidth, height: window.innerHeight })
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const showToast = useCallback((text: string) => {
     setToastText(text)
@@ -840,6 +852,15 @@ export function App() {
 
   return (
     <div id="app">
+      <div
+        id="viewportIndicator"
+        data-testid="viewport-indicator"
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1 left-1 z-50 select-none rounded border border-[#3b444f] bg-[#111418]/90 px-1.5 py-0.5 font-mono text-[10px] leading-tight text-[#9ed0ff] tabular-nums shadow-sm"
+      >
+        {viewport.width} × {viewport.height}
+      </div>
+
       {/* Window Titlebar */}
       <div className="windowbar">
         <strong>

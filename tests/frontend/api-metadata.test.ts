@@ -140,6 +140,8 @@ describe('api.ts', () => {
     expect(reqMock).toHaveBeenCalledWith('query', { limit: 10 })
 
     expect(message(new Error("Error invoking remote method 'cuepoint:request': Error: DB gesperrt"))).toBe('DB gesperrt')
+    expect(message("Error invoking remote method 'cuepoint:request':DB ohne Leerzeichen")).toBe('DB ohne Leerzeichen')
+    expect(message("Error invoking remote method 'cuepoint:request':   Error:   Mehrere Leerzeichen")).toBe('Mehrere Leerzeichen')
     expect(message('Plain error')).toBe('Plain error')
     const embeddedMsg = "Log: Error invoking remote method 'foo': Error: inner failure"
     expect(message(embeddedMsg)).toBe(embeddedMsg)
@@ -460,6 +462,7 @@ describe('api.ts', () => {
     await expect(request('query')).rejects.toThrow('HTTP 502')
     await expect(chooseFile(false)).resolves.toBeNull()
     await expect(windowControl('minimize')).resolves.toBeUndefined()
+    await expect(revealFile('E:/Music/pulse.mp3')).resolves.toBe(false)
 
     const winChoose = vi.fn().mockResolvedValue('E:/PIONEER/master.db')
     const winControl = vi.fn().mockResolvedValue(undefined)

@@ -130,21 +130,21 @@ async function webRequest<T>(method: string, params?: object): Promise<T> {
 }
 
 export const request = <T,>(method: string, params?: object): Promise<T> => {
-  if (typeof window !== 'undefined' && window.cuepoint?.request) {
+  if (window.cuepoint?.request) {
     return window.cuepoint.request<T>(method, params)
   }
   return webRequest<T>(method, params)
 }
 
 export const chooseFile = (directory: boolean): Promise<string | null> => {
-  if (typeof window !== 'undefined' && window.cuepoint?.choose) {
+  if (window.cuepoint?.choose) {
     return window.cuepoint.choose(directory)
   }
   return Promise.resolve(null)
 }
 
 export const windowControl = (action: 'minimize' | 'maximize' | 'close'): Promise<void> => {
-  if (typeof window !== 'undefined' && window.cuepoint?.window) {
+  if (window.cuepoint?.window) {
     return window.cuepoint.window(action)
   }
   return Promise.resolve()
@@ -158,7 +158,7 @@ export const rekordboxTransport = (params: {
 }) => request<TransportResult>('rekordboxTransport', params)
 
 export const revealFile = (path: string): Promise<boolean> =>
-  typeof window !== 'undefined' && window.cuepoint?.revealFile
+  window.cuepoint?.revealFile
     ? window.cuepoint.revealFile(path)
     : Promise.resolve(false)
 

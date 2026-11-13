@@ -3,7 +3,7 @@ export default {
   packageManager: 'npm',
   testRunner: 'vitest',
   vitest: {
-    configFile: 'vitest.config.ts',
+    configFile: 'vitest.stryker.config.ts',
     related: true,
   },
   mutate: [

@@ -9,6 +9,26 @@ from datetime import datetime, timezone
 
 SENSITIVE_KEYS = frozenset({"key", "password", "passwd", "secret", "token", "blob", "sqlcipher_key"})
 
+SUBSYSTEMS = frozenset({
+    "STARTUP",
+    "DATABASE",
+    "SNAPSHOT",
+    "SQLCIPHER",
+    "LIBRARY",
+    "QUERY",
+    "FILTER",
+    "SORT",
+    "LIVE",
+    "DJ_LINK",
+    "REKORDBOX_UIA",
+    "IPC",
+    "ELECTRON",
+    "EXPORT",
+    "SECURITY",
+    "TEST",
+    "BUILD",
+})
+
 ERROR_CODES = frozenset({
     "SOURCE_NOT_FOUND",
     "SOURCE_UNREADABLE",

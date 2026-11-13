@@ -14,7 +14,7 @@ import time
 
 from diagnostics import CuepointError, emit_log
 
-DEFAULT_SOURCE = Path.home() / "AppData" / "Roaming" / "Pioneer" / "rekordbox" / "master.db"
+DEFAULT_SOURCE = Path(r"E:\PIONEER\Master")
 DATABASE_NAMES = ("master.db", "exportLibrary.db", "export.pdb")
 
 MASTER_FIELDS = {
@@ -120,7 +120,7 @@ def snapshot(source: Path):
             except (FileNotFoundError, PermissionError) as exc:
                 emit_log(
                     "WARN",
-                    "sources",
+                    "SNAPSHOT",
                     "snapshot_retry",
                     f"Attempt {attempt + 1} failed: {exc}",
                     path=str(source),

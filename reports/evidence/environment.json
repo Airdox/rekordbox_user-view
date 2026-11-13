@@ -1,0 +1,17 @@
+{
+  "os": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+  "machine": "x86_64",
+  "python": "3.10.12",
+  "node": "v22.23.2",
+  "browser": "chromium-headless (playwright-cli /ms-playwright/chrome-headless-shell-linux64)",
+  "viewport": {
+    "width": 1440,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "url": "http://127.0.0.1:3000",
+  "mode": "web-bridge (Express + Vite + persistent Python 3 stdio JSON-RPC worker)",
+  "fixture": "build/synthetic_test_master.db (15,500 tracks)",
+  "consoleErrors": [],
+  "pageErrors": []
+}

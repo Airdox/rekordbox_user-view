@@ -1,6 +1,7 @@
 import express from 'express'
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
-import { existsSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline'
 import { createServer as createViteServer } from 'vite'
@@ -24,6 +25,26 @@ const ALLOWED_METHODS = new Set([
 
 const rootDir = process.cwd()
 const fixturePath = join(rootDir, 'build', 'synthetic_test_master.db')
+const statePath = join(rootDir, '.cuepoint-state.json')
+const defaultMasterPath = 'E:\\PIONEER\\Master'
+
+function savedWebPath(): string | undefined {
+  try {
+    const parsed = JSON.parse(readFileSync(statePath, 'utf8')) as { path?: unknown }
+    return typeof parsed?.path === 'string' && parsed.path.length > 0 ? parsed.path : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function rememberWebPath(path: string): void {
+  try {
+    writeFileSync(statePath + '.tmp', JSON.stringify({ path }), 'utf8')
+    renameSync(statePath + '.tmp', statePath)
+  } catch {
+    /* ignore write errors in read-only environments */
+  }
+}
 
 interface PendingEntry {
   resolve: (value: unknown) => void
@@ -118,11 +139,22 @@ class PythonBridge {
         err.errorCode = 'PYTHON_WORKER_UNAVAILABLE'
         throw err
       }
-      const resolvedParams =
-        method === 'demoLibrary' && !params.path && existsSync(fixturePath)
-          ? { path: fixturePath }
-          : params
-      return new Promise<unknown>((resolve, reject) => {
+      let effectiveMethod = method
+      let resolvedParams = params
+      if (method === 'open') {
+        const explicitPath = typeof params.path === 'string' && params.path.trim() ? params.path.trim() : undefined
+        const previousPath = process.env.CUEPOINT_LIBRARY_PATH || savedWebPath()
+        const candidatePath = explicitPath || (previousPath && existsSync(previousPath) ? previousPath : undefined)
+        if (candidatePath) {
+          resolvedParams = { ...params, path: candidatePath }
+        } else if (!explicitPath && !existsSync(defaultMasterPath) && existsSync(fixturePath)) {
+          effectiveMethod = 'demoLibrary'
+          resolvedParams = { path: fixturePath }
+        }
+      } else if (method === 'demoLibrary' && !params.path && existsSync(fixturePath)) {
+        resolvedParams = { path: fixturePath }
+      }
+      const res = await new Promise<unknown>((resolve, reject) => {
         const id = ++this.nextId
         const timeout = setTimeout(() => {
           this.pending.delete(id)
@@ -133,8 +165,18 @@ class PythonBridge {
           reject(err)
         }, 90_000)
         this.pending.set(id, { resolve, reject, timeout })
-        active.stdin.write(JSON.stringify({ id, method, params: resolvedParams }) + '\n')
+        active.stdin.write(JSON.stringify({ id, method: effectiveMethod, params: resolvedParams }) + '\n')
       })
+      if (
+        effectiveMethod === 'open' &&
+        !process.env.CUEPOINT_LIBRARY_PATH &&
+        res &&
+        typeof res === 'object' &&
+        typeof (res as { path?: unknown }).path === 'string'
+      ) {
+        rememberWebPath((res as { path: string }).path)
+      }
+      return res
     }
 
     const result = this.queue.then(run, run)

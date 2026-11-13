@@ -1,0 +1,173 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "actions": [
+    {
+      "step": "initial-load-live-match",
+      "expected": "15.500 tracks loaded, dark theme rgb(17,20,24), active tab rgb(32,75,121), 24 Camelot wheel segments, synthetic waveform explicitly labeled",
+      "observed": {
+        "total": "15.500",
+        "wfSource": "synthetic",
+        "hasSyntheticLabel": true,
+        "wfBars": 226,
+        "wheelSegments": 24,
+        "layout": {
+          "docOverflow": 0,
+          "bodyBg": "rgb(17, 20, 24)",
+          "activeTabBg": "rgb(32, 75, 121)",
+          "winbarH": 34,
+          "topnavH": 55,
+          "livebarH": 105,
+          "footerH": 31,
+          "panes": [
+            {
+              "width": 316,
+              "height": 675,
+              "left": 204,
+              "right": 520
+            },
+            {
+              "width": 654,
+              "height": 675,
+              "left": 520,
+              "right": 1174
+            },
+            {
+              "width": 266,
+              "height": 675,
+              "left": 1174,
+              "right": 1440
+            }
+          ],
+          "clippedButtons": [],
+          "rowHeight": 40,
+          "headerHeight": 33
+        }
+      },
+      "passed": true
+    },
+    {
+      "step": "live-match-camelot-filter-search-add",
+      "expected": "Camelot 9A active, BPM tolerance +-6% + Techno search applied, first track selected & added to Set (count=1)",
+      "observed": {
+        "liveCountText": "18 Treffer · 14.6 ms",
+        "wheelNotice": "Aktive Keys: 9A",
+        "bpmToleranceText": "±6 %",
+        "setCount": "1"
+      },
+      "passed": true
+    },
+    {
+      "step": "filter-studio-preset-sortdesigner-virtual",
+      "expected": "Virtual DOM < 100 rows for 15.5k tracks, Techno/Peak preset filters accurately, SortDesigner Alt+ArrowDown swaps stage order, 2nd track added to Set",
+      "observed": {
+        "filterVirtDomRows": 21,
+        "technoRowCount": 737,
+        "firstSortBefore": "genre",
+        "secondSortBefore": "year",
+        "firstSortAfter": "year",
+        "setCount": "2",
+        "layout": {
+          "docOverflow": 0,
+          "bodyBg": "rgb(17, 20, 24)",
+          "activeTabBg": "rgb(32, 75, 121)",
+          "winbarH": 34,
+          "topnavH": 55,
+          "livebarH": 105,
+          "footerH": 31,
+          "panes": [
+            {
+              "width": 353,
+              "height": 675,
+              "left": 204,
+              "right": 557
+            },
+            {
+              "width": 630,
+              "height": 675,
+              "left": 557,
+              "right": 1187
+            },
+            {
+              "width": 253,
+              "height": 675,
+              "left": 1187,
+              "right": 1440
+            }
+          ],
+          "clippedButtons": [],
+          "rowHeight": 40,
+          "headerHeight": 33
+        }
+      },
+      "passed": true
+    },
+    {
+      "step": "set-builder-reorder-transitions",
+      "expected": "Set shows 2 tracks, 1 transition analysis badge, move down flips track order",
+      "observed": {
+        "setRowsBefore": [
+          "Drift",
+          "Blue Hour"
+        ],
+        "setRowsAfter": [
+          "Blue Hour",
+          "Drift"
+        ],
+        "transitionCount": 1,
+        "statTracks": "2",
+        "statBpm": "116.2–140.8",
+        "layout": {
+          "docOverflow": 0,
+          "bodyBg": "rgb(17, 20, 24)",
+          "activeTabBg": "rgb(32, 75, 121)",
+          "winbarH": 34,
+          "topnavH": 55,
+          "livebarH": 105,
+          "footerH": 31,
+          "panes": [
+            {
+              "width": 908,
+              "height": 675,
+              "left": 204,
+              "right": 1112
+            },
+            {
+              "width": 328,
+              "height": 675,
+              "left": 1112,
+              "right": 1440
+            }
+          ],
+          "clippedButtons": [],
+          "rowHeight": null,
+          "headerHeight": null
+        }
+      },
+      "passed": true
+    },
+    {
+      "step": "reload-persistence",
+      "expected": "localStorage preserves 2 set tracks across full browser reload",
+      "observed": {
+        "persistedSetCount": "2"
+      },
+      "passed": true
+    },
+    {
+      "step": "hardware-modal-demo-link",
+      "expected": "Hardware modal opens cleanly, Demo-Link activates simulated deck card, Escape closes modal",
+      "observed": {
+        "demoDeckText": "Deck 1 · airdox Demo\nMASTER\nPLAY\n4B\nDissolve – Kinetic State 07\n136.63 BPM · Rekordbox\nIn Bibliothek wählen",
+        "consoleErrors": [],
+        "pageErrors": []
+      },
+      "passed": true
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": []
+}

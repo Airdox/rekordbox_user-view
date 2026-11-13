@@ -176,7 +176,7 @@ class DjLink:
                             self.error = "Alle virtuellen Player-Nummern sind belegt." if self._devices else None
                     next_announcement = now + 1.5
         except OSError as exc:
-            emit_log("ERROR", "live", "dj_link_runtime_error", str(exc))
+            emit_log("ERROR", "DJ_LINK", "dj_link_runtime_error", str(exc))
             with self._lock:
                 self.state, self.error = "error", f"Pro DJ Link: {exc}"
         finally:

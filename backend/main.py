@@ -306,10 +306,15 @@ def main():
                 )
         except Exception as exc:
             error_code = exc.code if isinstance(exc, CuepointError) else None
+            is_initial_probe = (
+                error_code == "SOURCE_NOT_FOUND"
+                and message.get("method") == "open"
+                and not (message.get("params") or {}).get("path")
+            )
             emit_log(
-                "ERROR",
+                "INFO" if is_initial_probe else "ERROR",
                 "IPC",
-                "rpc_failed",
+                "default_source_absent" if is_initial_probe else "rpc_failed",
                 str(exc) or exc.__class__.__name__,
                 correlation_id=cid,
                 duration_ms=(perf_counter() - started) * 1000,

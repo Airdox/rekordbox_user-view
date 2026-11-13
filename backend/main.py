@@ -112,9 +112,19 @@ class Core:
                     and abs(track["bpm"] - deck["original_bpm"]) <= 0.05
                     and (not deck["seconds"] or not track["seconds"] or abs(track["seconds"] - deck["seconds"]) <= 2)
                 ]
+            ambiguous = len(candidates) > 1
+            if ambiguous:
+                emit_log(
+                    "WARN",
+                    "LIVE",
+                    "TRACK_AMBIGUOUS",
+                    f"Mehrdeutige Track-Zuordnung ({len(candidates)} Kandidaten)",
+                    deck=deck["deck"],
+                    candidates=len(candidates),
+                )
             track = candidates[0] if len(candidates) == 1 else None
             local_id = track["id"] if track else None
-            result["decks"].append({
+            deck_payload = {
                 "deck": deck["deck"],
                 "name": "Rekordbox",
                 "source": deck["deck"],
@@ -132,7 +142,10 @@ class Core:
                 "genre": track["genre"] if track else None,
                 "seconds": deck["seconds"] or (track["seconds"] if track else None),
                 "libraryId": local_id,
-            })
+            }
+            if ambiguous:
+                deck_payload["matchErrorCode"] = "TRACK_AMBIGUOUS"
+            result["decks"].append(deck_payload)
 
         selected = self._select_anchor(result["decks"], state, options.get("deck"))
         result["anchor"] = selected["deck"] if selected else None
@@ -208,9 +221,15 @@ class Core:
         if method == "detail":
             track = self.library.detail(params["id"]) if self.library else None
             if not track:
+                if params.get("strict"):
+                    raise CuepointError("TRACK_NOT_FOUND", f"Track '{params.get('id')}' nicht gefunden.")
                 return None
             samples, wf_source = waveform_with_source(self.library, track)
-            return {**track, "waveform": samples, "waveformSource": wf_source}
+            payload = {**track, "waveform": samples, "waveformSource": wf_source}
+            if wf_source == "none" and track.get("analysis"):
+                emit_log("WARN", "LIBRARY", "ANALYSIS_FILE_MISSING", "Rekordbox ANLZ-Datei nicht gefunden", trackId=track["id"])
+                payload["analysisStatus"] = "ANALYSIS_FILE_MISSING"
+            return payload
         if method == "interfaces":
             return [{"name": item["name"], "ip": item["ip"]} for item in interfaces()]
         if method == "usb":
@@ -266,7 +285,7 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     playback = RekordboxPlayback()
     core = Core(local_playback=playback)
-    emit_log("INFO", "worker", "started", "Cuepoint Python worker listening on stdio")
+    emit_log("INFO", "STARTUP", "worker_started", "Cuepoint Python worker listening on stdio")
     for line in sys.stdin:
         message = {}
         cid = new_correlation_id()
@@ -279,7 +298,7 @@ def main():
             if method in ("open", "demoLibrary", "linkStart", "bindMedia"):
                 emit_log(
                     "INFO",
-                    "rpc",
+                    "IPC",
                     f"rpc_{method}",
                     f"Completed {method}",
                     correlation_id=cid,
@@ -289,7 +308,7 @@ def main():
             error_code = exc.code if isinstance(exc, CuepointError) else None
             emit_log(
                 "ERROR",
-                "rpc",
+                "IPC",
                 "rpc_failed",
                 str(exc) or exc.__class__.__name__,
                 correlation_id=cid,

@@ -18,6 +18,7 @@ function createElectronHarness({
   savedPathContent = null,
   dialogResult = { canceled: false, filePaths: ['E:\\PIONEER\\Master\\master.db'] },
   mainFrameOverride = null,
+  throwOnWrite = false,
 } = {}) {
   const handles = new Map()
   const appEvents = new Map()
@@ -159,6 +160,7 @@ function createElectronHarness({
     return origRead(target, enc)
   }
   fs.writeFileSync = (target, content) => {
+    if (throwOnWrite) throw new Error('EACCES')
     savedFiles.set(String(target), String(content))
   }
   fs.renameSync = (from, to) => {
@@ -418,13 +420,56 @@ test('main.cjs covers packaged mode, CUEPOINT_TEST_PROFILE, open fallback, cance
   // Request timeout (mock 90_000 timer) + stdin error
   globalThis.setTimeout = (fn, ms) => (ms === 90_000 ? origSetTimeout(fn, 5) : origSetTimeout(fn, ms))
   try {
-    await assert.rejects(() => reqHandler(harness.trustedEvent, 'usb', {}), /Zeitüberschreitung/)
+    await assert.rejects(
+      () => reqHandler(harness.trustedEvent, 'usb', {}),
+      (err) => /Zeitüberschreitung/.test(err.message) && err.errorCode === 'IPC_TIMEOUT',
+    )
   } finally {
     globalThis.setTimeout = origSetTimeout
   }
   const failAfterClose = reqHandler(harness.trustedEvent, 'usb', {})
   child.stdin.emit('error', new Error('broken pipe'))
   await assert.rejects(() => failAfterClose, /broken pipe/)
-  // Late error/exit after worker already cleared is ignored cleanly
-  child.emit('error', new Error('ignored'))
+  // Request when worker is down rejects with PYTHON_WORKER_UNAVAILABLE
+  await assert.rejects(
+    () => reqHandler(harness.trustedEvent, 'usb', {}),
+    (err) => err.errorCode === 'PYTHON_WORKER_UNAVAILABLE',
+  )
+  // Late error/exit after worker already cleared is ignored cleanly, and logDiagnostic survives stderr failure
+  const origStderrWrite = process.stderr.write
+  process.stderr.write = () => { throw new Error('stderr closed') }
+  try {
+    child.emit('error', new Error('ignored'))
+  } finally {
+    process.stderr.write = origStderrWrite
+  }
+})
+
+test('main.cjs covers missing savedPath, remember write failure and errorCode propagation', async () => {
+  const origConsoleError = console.error
+  const loggedErrors = []
+  console.error = (...args) => loggedErrors.push(args.join(' '))
+  const harness = createElectronHarness({ savedPathContent: null, throwOnWrite: true })
+  try {
+    await harness.whenReady()
+    const reqHandler = harness.handles.get('cuepoint:request')
+    const child = harness.children[0]
+    const openPromise = reqHandler(harness.trustedEvent, 'open', {})
+    const openPayload = JSON.parse(child.stdin.writes[0].trim())
+    assert.equal(openPayload.params.path, undefined)
+    child.stdout.write(JSON.stringify({ id: openPayload.id, result: { path: 'E:\\PIONEER\\Master\\master.db', kind: 'Master' } }) + '\n')
+    const res = await openPromise
+    assert.equal(res.kind, 'Master')
+    assert.ok(loggedErrors.some((msg) => msg.includes('EACCES')))
+
+    const errPromise = reqHandler(harness.trustedEvent, 'query', {})
+    const errPayload = JSON.parse(child.stdin.writes[1].trim())
+    child.stdout.write(JSON.stringify({ id: errPayload.id, error: 'Track fehlt', errorCode: 'TRACK_NOT_FOUND' }) + '\n')
+    await assert.rejects(
+      () => errPromise,
+      (err) => err.message === 'Track fehlt' && err.errorCode === 'TRACK_NOT_FOUND',
+    )
+  } finally {
+    console.error = origConsoleError
+  }
 })

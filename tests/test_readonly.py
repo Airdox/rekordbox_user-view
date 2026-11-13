@@ -11,7 +11,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from fixtures import generate
 from library import Library
-from sources import DEFAULT_SOURCE
+from sources import resolve_source
 
 
 def fingerprint(directory, prefix):
@@ -47,7 +47,7 @@ def test_committed_wal_is_included_without_touching_source(tmp_path):
 
 @pytest.mark.skipif(os.environ.get("CUEPOINT_VERIFY_REAL") != "1", reason="opt-in for the local production database")
 def test_production_snapshot_leaves_master_and_sidecars_byte_identical():
-    source = DEFAULT_SOURCE / "master.db"
+    source = resolve_source()
     before = fingerprint(source.parent, source.name)
     library = Library.load(source)
     try:

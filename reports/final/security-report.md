@@ -19,11 +19,11 @@ Status: **`PASS`** (Originaldaten-Schutz, Electron-Sandbox & IPC-Whitelist volls
 
 | Kontrolle | Implementierung (`electron/main.cjs`, `preload.cjs`, `server.ts`) | Testnachweis | Ergebnis |
 |---|---|---|---|
-| **Renderer-Isolation** | `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`, kein Anwendungsmenü (`Menu.setApplicationMenu(null)`). | `tests/electron/main.test.mjs` Subtest 2 | `PASS` |
-| **Navigations- & Fenster-Sperre** | `setWindowOpenHandler(() => ({ action: 'deny' }))`, `will-navigate` -> `event.preventDefault()`, `setPermissionRequestHandler(..., false)`. | `tests/electron/main.test.mjs` Subtest 2 (`evil.example`, `media`) | `PASS` |
+| **Renderer-Isolation** | `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`, kein Anwendungsmenü (`Menu.setApplicationMenu(null)`). | `tests/electron/main.test.mjs` (`5/5` PASS, `c8` 100 % Stmts / 93.87 % Branches) | `PASS` |
+| **Navigations- & Fenster-Sperre** | `setWindowOpenHandler(() => ({ action: 'deny' }))`, `will-navigate` -> `event.preventDefault()`, `setPermissionRequestHandler(..., false)`. | `tests/electron/main.test.mjs` (`evil.example`, `media`) | `PASS` |
 | **IPC-Methoden-Whitelist & Frame-Prüfung** | `trusted(event)` prüft `sender === webContents && senderFrame === mainFrame`; nur 13 definierte Methoden (`open`, `demoLibrary`, `query`, `detail`, `interfaces`, `usb`, `linkStart`, `linkStop`, `demoLink`, `live`, `bindMedia`, `unbindMedia`, `rekordboxTransport`). Web-Bridge `server.ts` erzwingt exakt dieselbe Whitelist `ALLOWED_METHODS`. | `tests/electron/main.test.mjs` (`evalShell` abgelehnt, gefälschter `senderFrame` abgelehnt) | `PASS` |
-| **Explorer-Reveal Validierung (`cuepoint:revealFile`)** | Prüft `trusted(event)`, `typeof filePath === 'string'`, `filePath.length > 0` und `existsSync(filePath)` vor `shell.showItemInFolder`. | `tests/electron/main.test.mjs` Subtest 2 | `PASS` |
-| **Worker-JSON-RPC Trennung** | JSON-RPC ausschließlich auf `stdout`; strukturierte Diagnosen und Fehler ausschließlich auf `stderr`. | `backend/diagnostics.py`, `tests/electron/main.test.mjs` Subtest 3 | `PASS` |
+| **Explorer-Reveal Validierung (`cuepoint:revealFile`)** | Prüft `trusted(event)`, `typeof filePath === 'string'`, `filePath.length > 0` und `existsSync(filePath)` vor `shell.showItemInFolder`. | `tests/electron/main.test.mjs` | `PASS` |
+| **Worker-JSON-RPC Trennung** | JSON-RPC ausschließlich auf `stdout`; strukturierte Diagnosen und Fehlercode-Weiterleitung (`errorCode`) ausschließlich über `stderr` / Error-Objekt. | `backend/diagnostics.py`, `tests/electron/main.test.mjs` (`5/5` PASS) | `PASS` |
 
 ---
 

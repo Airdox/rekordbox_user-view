@@ -1238,3 +1238,71 @@ def test_backend_ast_mutation_killer_suite():
     assert core._select_anchor([d_m_off, d_m_on], "pro-dj-link", None)["deck"] == 2
 
 
+def test_structured_error_codes_and_ambiguity_reporting():
+    sample = [
+        {
+            "id": "dup1",
+            "title": "Same Song",
+            "artist": "Same Artist",
+            "genre": "Techno",
+            "bpm": 135.0,
+            "key_raw": "8A",
+            "seconds": 300,
+            "analysis": "/PIONEER/ANLZ0000.DAT",
+        },
+        {
+            "id": "dup2",
+            "title": "Same Song",
+            "artist": "Same Artist",
+            "genre": "Techno",
+            "bpm": 135.0,
+            "key_raw": "8A",
+            "seconds": 300,
+        },
+    ]
+
+    class AmbiguousPlayback:
+        def snapshot(self):
+            return True, [
+                {
+                    "deck": 1,
+                    "title": "Same Song",
+                    "artist": "Same Artist",
+                    "bpm": 135.0,
+                    "original_bpm": 135.0,
+                    "key": "8A",
+                    "seconds": 300,
+                    "playing": True,
+                    "fader": 1.0,
+                    "master": True,
+                }
+            ]
+
+    core = main_mod.Core(local_playback=AmbiguousPlayback())
+    core.replace_library(lib_mod.Library(None, "Master", sample))
+    try:
+        assert core.handle("detail", {"id": "missing"}) is None
+        with pytest.raises(main_mod.CuepointError) as exc_info:
+            core.handle("detail", {"id": "missing", "strict": True})
+        assert exc_info.value.code == "TRACK_NOT_FOUND"
+
+        det = core.handle("detail", {"id": "dup1"})
+        assert det["waveformSource"] == "none"
+        assert det["analysisStatus"] == "ANALYSIS_FILE_MISSING"
+
+        status = core.handle("live", {})
+        assert status["decks"][0]["libraryId"] is None
+        assert status["decks"][0]["matchErrorCode"] == "TRACK_AMBIGUOUS"
+
+        transport = rb_live.send_track_to_rekordbox(
+            "reveal",
+            "Same Song",
+            window_fn=lambda: None,
+            clipboard_fn=lambda _t: False,
+        )
+        assert transport["ok"] is False
+        assert transport["errorCode"] == "REKORDBOX_NOT_RUNNING"
+    finally:
+        core.library.close()
+
+

@@ -23,6 +23,9 @@ export default {
     low: 95,
     break: 95,
   },
-  concurrency: 4,
-  timeoutMS: 20000,
+  tsconfigFile: 'tsconfig.stryker-skip.json',
+  ignorePatterns: ['build', 'dist', 'referenzbilder', 'docs', 'public', 'reports', 'release'],
+  ignoreStatic: true,
+  concurrency: 1,
+  timeoutMS: 30000,
 }

@@ -6,12 +6,14 @@ Status: **`PASS`** (geprüft am `1440x900` Viewport, Scale `1.0`, gegen `referen
 
 ## 1. Vorhandene Evidenzdateien
 
-- **Referenz-Screenshot:** `referenzbilder/111111.png` (Filter-Studio mit geöffnetem Sortierdesigner & Preset)
+- **Referenz-Screenshot:** `referenzbilder/111111.png` (Filter-Studio mit geöffnetem Sortierdesigner & Preset; Kopie abgelegt unter `reports/evidence/reference/111111.png`)
+- **Side-by-Side Vergleich (`1440x900` vs. Referenz):** `reports/evidence/comparisons/filter-studio-vs-reference.png`
 - **Nachbau-Screenshots (`reports/evidence/reconstruction/`):**
   - `live-match.png` (`Live-Match`, Camelot `9A`, BPM `±6 %`, Suche `Techno`, Inspector + Set `+1`)
   - `filter-studio.png` (`Filter-Studio`, `Techno / Peak`, Sortierkaskade nach `Alt+ArrowDown`, Inspector + Set `2`)
   - `set-builder.png` (`Set-Builder`, `2` Tracks, Übergang `#1 -> #2`, Reorder + 4 KPI-Kacheln)
   - `hardware-modal.png` (`Hardware, Pro DJ Link & Quellmedien`, `Demo-Link` aktiviert)
+- **Viewport-Overlay-Nachweis (`#viewportIndicator`):** Nachgerüstet gemäß Benutzeranforderung (`position: absolute`, oben links, `pointer-events: none`); live in Headless Chromium bei `1280x720` (`"1280 × 720"`) und dynamisch nach Resize auf `1440x900` (`"1440 × 900"`) mit `0` Konsolen-/Seitenfehlern verifiziert.
 - **Maschinelle Protokolle:** `reports/evidence/reconstruction/gui-actions.json` & `environment.json`
 
 ---

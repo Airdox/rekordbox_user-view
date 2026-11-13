@@ -104,20 +104,27 @@ function launchWorker() {
     if (!entry) return
     clearTimeout(entry.timeout)
     pending.delete(data.id)
-    if (data.error) entry.reject(new Error(data.error))
-    else entry.resolve(data.result)
+    if (data.error) {
+      const err = new Error(data.error)
+      if (data.errorCode) err.errorCode = data.errorCode
+      entry.reject(err)
+    } else entry.resolve(data.result)
   })
 }
 
 function request(method, params) {
   if (!worker) {
-    return Promise.reject(new Error(workerError || 'Der Python-Dienst ist nicht verfügbar.'))
+    const err = new Error(workerError || 'Der Python-Dienst ist nicht verfügbar.')
+    err.errorCode = 'PYTHON_WORKER_UNAVAILABLE'
+    return Promise.reject(err)
   }
   return new Promise((resolve, reject) => {
     const id = ++nextId
     const timeout = setTimeout(() => {
       pending.delete(id)
-      reject(new Error('Zeitüberschreitung beim Lesen der Bibliothek.'))
+      const err = new Error('Zeitüberschreitung beim Lesen der Bibliothek.')
+      err.errorCode = 'IPC_TIMEOUT'
+      reject(err)
     }, 90_000)
     pending.set(id, { resolve, reject, timeout })
     worker.stdin.write(JSON.stringify({ id, method, params }) + '\n')
@@ -151,7 +158,11 @@ function trusted(event) {
 }
 
 ipcMain.handle('cuepoint:request', async (event, method, params = {}) => {
-  if (!trusted(event) || !methods.has(method)) throw new Error('Unbekannter Bibliotheksbefehl.')
+  if (!trusted(event) || !methods.has(method)) {
+    const err = new Error('Unbekannter Bibliotheksbefehl.')
+    err.errorCode = 'SOURCE_UNREADABLE'
+    throw err
+  }
   if (method === 'open') {
     const testPath = process.env.CUEPOINT_LIBRARY_PATH
     const previous = testPath || savedPath()

@@ -16,6 +16,7 @@ try:
 except ImportError:  # pragma: no cover - optional on non-Windows sandbox
     psutil = None  # type: ignore
 
+from diagnostics import emit_log
 from keys import camelot
 
 LOGGER = logging.getLogger(__name__)
@@ -401,11 +402,13 @@ class RekordboxPlayback:
                                 "master": master,
                             })
                     self._reading = (time.monotonic(), bool(hwnd), decks)
-                except (OSError, ValueError, comtypes.COMError):
+                except (OSError, ValueError, comtypes.COMError) as exc:
+                    emit_log("WARN", "REKORDBOX_UIA", "uia_read_failed", str(exc) or exc.__class__.__name__)
                     hwnd, displays, previous, hold_until = None, [], {}, {}
                     self._reading = (time.monotonic(), False, [])
                 self._stop.wait(0.35 if displays else 0.9)
-        except (OSError, comtypes.COMError):
+        except (OSError, comtypes.COMError) as exc:
+            emit_log("ERROR", "REKORDBOX_UIA", "REKORDBOX_UI_UNAVAILABLE", str(exc) or exc.__class__.__name__)
             self._reading = (time.monotonic(), False, [])
         finally:
             comtypes.CoUninitialize()
@@ -564,9 +567,11 @@ def send_track_to_rekordbox(
     copied = bool(clipboard_fn(clean_query))
     hwnd = window_fn()
     if not hwnd:
+        emit_log("WARN", "REKORDBOX_UIA", "REKORDBOX_NOT_RUNNING", "Rekordbox window not detected", action=action)
         return {
             "ok": False,
             "reason": "no_window",
+            "errorCode": "REKORDBOX_NOT_RUNNING",
             "action": action,
             "deck": None,
             "query": clean_query,
@@ -598,6 +603,7 @@ def send_track_to_rekordbox(
         sleep_fn(0.12)
         key_sender("shift", "right")
     label = f"In Rekordbox gesucht & an Deck {deck} (A/B) gesendet" if deck else "In Rekordbox gesucht"
+    emit_log("INFO", "REKORDBOX_UIA", f"transport_{action}", f"{label}", deck=deck)
     return {
         "ok": True,
         "reason": "sent",

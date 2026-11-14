@@ -672,7 +672,8 @@
 <a name='L596'></a><a href='#L596'>596</a>
 <a name='L597'></a><a href='#L597'>597</a>
 <a name='L598'></a><a href='#L598'>598</a>
-<a name='L599'></a><a href='#L599'>599</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L599'></a><a href='#L599'>599</a>
+<a name='L600'></a><a href='#L600'>600</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -899,21 +900,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">213x</span>
+<span class="cline-any cline-yes">224x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">213x</span>
-<span class="cline-any cline-yes">4686x</span>
-<span class="cline-any cline-yes">213x</span>
-<span class="cline-any cline-yes">4686x</span>
+<span class="cline-any cline-yes">224x</span>
+<span class="cline-any cline-yes">4928x</span>
+<span class="cline-any cline-yes">224x</span>
+<span class="cline-any cline-yes">4928x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">213x</span>
-<span class="cline-any cline-yes">213x</span>
+<span class="cline-any cline-yes">224x</span>
+<span class="cline-any cline-yes">224x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">213x</span>
-<span class="cline-any cline-yes">4686x</span>
+<span class="cline-any cline-yes">224x</span>
+<span class="cline-any cline-yes">4928x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">213x</span>
+<span class="cline-any cline-yes">224x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1090,8 +1091,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4664x</span>
-<span class="cline-any cline-yes">4664x</span>
+<span class="cline-any cline-yes">4906x</span>
+<span class="cline-any cline-yes">4906x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1427,11 +1429,11 @@ export const PROJECT_REQUIREMENTS: RequirementItem[] = [
     id: 'F-16',
     category: 'Tests &amp; Release',
     title: 'Portable Windows-x64 EXE Packaging (Cuepoint-1.1.0-Windows-x64.exe)',
-    modules: 'package.json, scripts/build-backend.ps1, .github/workflows/quality-gate.yml',
-    evidence: 'Build-Skripte &amp; GitHub-Actions-Workflow fertiggestellt und abgeglichen',
+    modules: 'Build-Windows-EXE.bat, Start-Cuepoint-Windows.bat, package.json, scripts/build-backend.ps1',
+    evidence: '1-Klick-Builder (Build-Windows-EXE.bat) &amp; Schnellstarter (Start-Cuepoint-Windows.bat) bereit',
     status: 'windows_pending',
     statusLabel: 'Skripte 100 % · Build benötigt Windows-x64-Host',
-    nextStep: 'Auf Windows-PC oder GitHub Actions (windows-latest) den Befehl npm run package:win ausführen.',
+    nextStep: 'Auf Ihrem Windows-PC einfach Doppelklick auf Build-Windows-EXE.bat (erzeugt release\\Cuepoint-1.1.0-Windows-x64.exe) oder Start-Cuepoint-Windows.bat.',
   },
   {
     id: 'QA-01',
@@ -1817,32 +1819,33 @@ export function StatusView({ active, source, onOpenHardware, onSwitchTab }: Stat
             &lt;/span&gt;
           &lt;/div&gt;
 &nbsp;
-          &lt;div className="section-label"&gt;Was folgt auf Ihrem Windows-PC? (4 Schritte)&lt;/div&gt;
+          &lt;div className="section-label"&gt;Was folgt auf Ihrem Windows-PC? (1-Klick-Start &amp;amp; EXE-Build)&lt;/div&gt;
           &lt;ol className="steps" style={{ paddingLeft: '18px', fontSize: '12px', lineHeight: 1.55 }}&gt;
             &lt;li&gt;
-              &lt;strong&gt;Schritt 1 – Windows-Abhängigkeiten installieren:&lt;/strong&gt;
+              &lt;strong&gt;Schritt 1 – Projekt-ZIP herunterladen &amp;amp; entpacken:&lt;/strong&gt;
               &lt;br /&gt;
-              &lt;code&gt;pip install -r requirements.txt -r requirements-dev.txt&lt;/code&gt; installiert{' '}
-              &lt;code&gt;sqlcipher3&lt;/code&gt;, &lt;code&gt;pyrekordbox&lt;/code&gt;, &lt;code&gt;numpy&lt;/code&gt; und{' '}
-              &lt;code&gt;comtypes&lt;/code&gt;.
+              Projekt aus AI Studio exportieren/herunterladen und auf Ihrem Windows-PC entpacken.
             &lt;/li&gt;
             &lt;li&gt;
-              &lt;strong&gt;Schritt 2 – Datenbank E:\PIONEER\Master prüfen:&lt;/strong&gt;
+              &lt;strong&gt;Schritt 2 – 1-Klick Portable-EXE bauen (Empfohlen):&lt;/strong&gt;
               &lt;br /&gt;
-              Beim Start liest Cuepoint &lt;code&gt;E:\PIONEER\Master\master.db&lt;/code&gt; über eine
-              SHA-256-geprüfte Schattenkopie (100 % Read-Only).
+              Doppelklick auf &lt;code&gt;Build-Windows-EXE.bat&lt;/code&gt; richtet Python (&lt;code&gt;.venv&lt;/code&gt;),{' '}
+              &lt;code&gt;sqlcipher3&lt;/code&gt;, &lt;code&gt;pyrekordbox&lt;/code&gt;, &lt;code&gt;comtypes&lt;/code&gt; &amp;amp;{' '}
+              &lt;code&gt;PyInstaller&lt;/code&gt; automatisch ein und erzeugt{' '}
+              &lt;code&gt;release\Cuepoint-1.1.0-Windows-x64.exe&lt;/code&gt;.
             &lt;/li&gt;
             &lt;li&gt;
-              &lt;strong&gt;Schritt 3 – Rekordbox Live / Pro DJ Link koppeln:&lt;/strong&gt;
+              &lt;strong&gt;Schritt 3 – Alternativer 1-Klick-Direktstart:&lt;/strong&gt;
               &lt;br /&gt;
-              Mit geöffnetem Rekordbox unter Windows erkennt Cuepoint laufende Decks automatisch
-              oder verbindet sich über UDP &lt;code&gt;50000/50002&lt;/code&gt;.
+              Doppelklick auf &lt;code&gt;Start-Cuepoint-Windows.bat&lt;/code&gt; startet direkt die gebaute{' '}
+              &lt;code&gt;Cuepoint-1.1.0-Windows-x64.exe&lt;/code&gt; (oder den Desktop-Modus) mit{' '}
+              &lt;code&gt;E:\PIONEER\Master&lt;/code&gt;.
             &lt;/li&gt;
             &lt;li&gt;
-              &lt;strong&gt;Schritt 4 – Portable Windows-EXE erzeugen:&lt;/strong&gt;
+              &lt;strong&gt;Schritt 4 – Mit geöffnetem Rekordbox testen:&lt;/strong&gt;
               &lt;br /&gt;
-              &lt;code&gt;npm run package:win&lt;/code&gt; baut{' '}
-              &lt;code&gt;release/Cuepoint-1.1.0-Windows-x64.exe&lt;/code&gt;.
+              In Cuepoint einen Track wählen und auf &lt;code&gt;↗ In Rekordbox&lt;/code&gt; klicken – der
+              Tracktitel wird per UI-Automation direkt in das Rekordbox-Suchfeld übertragen.
             &lt;/li&gt;
           &lt;/ol&gt;
 &nbsp;
@@ -1875,7 +1878,7 @@ export function StatusView({ active, source, onOpenHardware, onSwitchTab }: Stat
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-14T04:29:54.024Z
+                at 2026-11-14T08:30:07.375Z
             </div>
         <script src="prettify.js"></script>
         <script>

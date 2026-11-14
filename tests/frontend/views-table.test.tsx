@@ -820,6 +820,29 @@ describe('set-view.tsx & hardware-modal.tsx', () => {
     expect(onMoveTrack).toHaveBeenCalledWith(0, 1)
     fireEvent.dragEnd(row0)
 
+    const initialFadeNode = screen.getByTestId('set-item-t1')
+    expect(initialFadeNode).toHaveClass('setitem-fade')
+    expect(row0).toHaveClass('setrow-fade')
+
+    // Reordering tracks triggers a fresh fade-in animation mount
+    rerender(
+      <SetView
+        active
+        tracks={[sampleTracks[1], sampleTracks[0], sampleTracks[2]]}
+        referenceKey="8A"
+        onMoveTrack={onMoveTrack}
+        onRemoveTrack={onRemoveTrack}
+        onSelectTrack={onSelectTrack}
+        onFindTracks={vi.fn()}
+        onExportCsv={onExportCsv}
+        onClearSet={onClearSet}
+        onExplainImport={vi.fn()}
+      />,
+    )
+    const reorderedFadeNode = screen.getByTestId('set-item-t1')
+    expect(reorderedFadeNode).toHaveClass('setitem-fade')
+    expect(reorderedFadeNode).not.toBe(initialFadeNode)
+
     rerender(
       <SetView
         active={false}

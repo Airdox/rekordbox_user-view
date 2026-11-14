@@ -1790,3 +1790,31 @@ select {
   animation: cuepoint-spin 0.65s linear infinite;
 }
 
+@keyframes cuepoint-set-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.setitem-fade {
+  animation: cuepoint-set-fade-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}
+
+.setrow-fade {
+  transition: background-color 150ms ease, outline-color 150ms ease, border-color 150ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .setitem-fade {
+    animation-duration: 1ms;
+    transform: none;
+  }
+}
+
+

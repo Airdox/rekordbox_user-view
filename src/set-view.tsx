@@ -124,10 +124,17 @@ export function SetView({
                     ? (next.bpm - t.bpm >= 0 ? '+' : '') + (next.bpm - t.bpm).toFixed(1) + ' BPM'
                     : '–'
 
+                const itemAnimationKey = `${t.id}:${i}:${t.title}:${t.bpm ?? ''}:${t.key ?? ''}:${next?.id ?? ''}`
+
                 return (
-                  <div key={t.id}>
+                  <div
+                    key={itemAnimationKey}
+                    className="setitem-fade"
+                    data-testid={`set-item-${t.id}`}
+                    style={{ animationDelay: `${Math.min(i * 18, 120)}ms` }}
+                  >
                     <div
-                      className={`setrow ${dragOverIndex === i ? 'dragover' : ''}`}
+                      className={`setrow setrow-fade ${dragOverIndex === i ? 'dragover' : ''}`}
                       draggable
                       onClick={() => onSelectTrack(t)}
                       onDragStart={() => setDragIndex(i)}

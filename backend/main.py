@@ -311,16 +311,27 @@ def main():
                 and message.get("method") == "open"
                 and not (message.get("params") or {}).get("path")
             )
-            emit_log(
-                "INFO" if is_initial_probe else "ERROR",
-                "IPC",
-                "default_source_absent" if is_initial_probe else "rpc_failed",
-                str(exc) or exc.__class__.__name__,
-                correlation_id=cid,
-                duration_ms=(perf_counter() - started) * 1000,
-                method=message.get("method"),
-                errorCode=error_code or "",
-            )
+            if is_initial_probe:
+                emit_log(
+                    "INFO",
+                    "IPC",
+                    "default_source_absent",
+                    "Standardpfad nicht vorhanden; Demo- oder manuelle Bibliotheksauswahl bereit",
+                    correlation_id=cid,
+                    duration_ms=(perf_counter() - started) * 1000,
+                    method=message.get("method"),
+                )
+            else:
+                emit_log(
+                    "ERROR",
+                    "IPC",
+                    "rpc_failed",
+                    str(exc) or exc.__class__.__name__,
+                    correlation_id=cid,
+                    duration_ms=(perf_counter() - started) * 1000,
+                    method=message.get("method"),
+                    errorCode=error_code or "",
+                )
             response = {"id": message.get("id"), "error": str(exc) or exc.__class__.__name__}
             if error_code:
                 response["errorCode"] = error_code

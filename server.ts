@@ -1,7 +1,6 @@
 import express from 'express'
-import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline'
 import { createServer as createViteServer } from 'vite'
@@ -147,9 +146,9 @@ class PythonBridge {
         const candidatePath = explicitPath || (previousPath && existsSync(previousPath) ? previousPath : undefined)
         if (candidatePath) {
           resolvedParams = { ...params, path: candidatePath }
-        } else if (!explicitPath && !existsSync(defaultMasterPath) && existsSync(fixturePath)) {
+        } else if (!explicitPath && !existsSync(defaultMasterPath)) {
           effectiveMethod = 'demoLibrary'
-          resolvedParams = { path: fixturePath }
+          resolvedParams = existsSync(fixturePath) ? { path: fixturePath } : {}
         }
       } else if (method === 'demoLibrary' && !params.path && existsSync(fixturePath)) {
         resolvedParams = { path: fixturePath }
@@ -194,6 +193,19 @@ class PythonBridge {
 
 async function startServer() {
   mkdirSync(join(rootDir, 'build'), { recursive: true })
+  const generatorScript = join(rootDir, 'tests', 'generate_synthetic_db.py')
+  if (!existsSync(fixturePath) && existsSync(generatorScript)) {
+    const pythonExe =
+      process.platform === 'win32'
+        ? existsSync(join(rootDir, '.venv', 'Scripts', 'python.exe'))
+          ? join(rootDir, '.venv', 'Scripts', 'python.exe')
+          : 'py'
+        : 'python3'
+    spawnSync(pythonExe, [...(pythonExe === 'py' ? ['-3.11'] : []), generatorScript], {
+      cwd: rootDir,
+      stdio: 'ignore',
+    })
+  }
   const bridge = new PythonBridge()
   const app = express()
   app.use(express.json({ limit: '2mb' }))

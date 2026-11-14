@@ -546,6 +546,118 @@ def _type_unicode(text: str) -> bool:
     return user32.SendInput(len(events), arr, ctypes.sizeof(_Input)) == len(events)
 
 
+def _click_screen_point(x: int, y: int) -> bool:
+    """Move cursor to (x, y) and send a Win32 left mouse click to focus an unlabeled control."""
+    if os.name != "nt":
+        return False
+
+    class _MouseInput(ctypes.Structure):
+        _fields_ = [
+            ("dx", wintypes.LONG),
+            ("dy", wintypes.LONG),
+            ("mouseData", wintypes.DWORD),
+            ("dwFlags", wintypes.DWORD),
+            ("time", wintypes.DWORD),
+            ("dwExtraInfo", ctypes.c_size_t),
+        ]
+
+    class _InputUnion(ctypes.Union):
+        _fields_ = [("mi", _MouseInput), ("pad", ctypes.c_byte * 32)]
+
+    class _Input(ctypes.Structure):
+        _fields_ = [("type", wintypes.DWORD), ("union", _InputUnion)]
+
+    user32 = ctypes.WinDLL("user32", use_last_error=True)
+    if hasattr(user32, "SetCursorPos"):
+        user32.SetCursorPos(int(x), int(y))
+    events = (
+        _Input(type=0, union=_InputUnion(mi=_MouseInput(dx=0, dy=0, mouseData=0, dwFlags=0x0002, time=0, dwExtraInfo=0))),
+        _Input(type=0, union=_InputUnion(mi=_MouseInput(dx=0, dy=0, mouseData=0, dwFlags=0x0004, time=0, dwExtraInfo=0))),
+    )
+    arr = (_Input * 2)(*events)
+    return user32.SendInput(2, arr, ctypes.sizeof(_Input)) == 2
+
+
+SEARCH_BUTTON_WORDS = ("search", "suche", "suchen", "filter", "lupe", "clear", "löschen", "collection")
+
+
+def _find_search_field_point_near_button(automation, uia, hwnd, offset_x: int | None = None) -> tuple[int, int] | None:
+    """Locate the unlabeled Rekordbox Collection search field by taking the position next to its adjacent button."""
+    root = automation.ElementFromHandle(hwnd)
+    cache = automation.CreateCacheRequest()
+    for prop in (
+        uia.UIA_NamePropertyId,
+        uia.UIA_HelpTextPropertyId,
+        uia.UIA_ControlTypePropertyId,
+        uia.UIA_BoundingRectanglePropertyId,
+    ):
+        cache.AddProperty(prop)
+    types = uia.UIA_ControlTypePropertyId
+    cond = automation.CreateOrCondition(
+        automation.CreatePropertyCondition(types, uia.UIA_ButtonControlTypeId),
+        automation.CreatePropertyCondition(types, uia.UIA_EditControlTypeId),
+    )
+    nodes = root.FindAllBuildCache(uia.TreeScope_Descendants, cond, cache)
+    buttons: list[Display] = []
+    unlabeled_edits: list[Display] = []
+    for index in range(nodes.Length):
+        el = nodes.GetElement(index)
+        rect = el.CachedBoundingRectangle
+        w = max(0, int(rect.right - rect.left))
+        h = max(0, int(rect.bottom - rect.top))
+        if w <= 0 or h <= 0:
+            continue
+        name = (el.CachedName or "").strip()
+        desc = (el.CachedHelpText or "").strip().casefold()
+        disp = Display(el, name, desc, (rect.left + rect.right) // 2, (rect.top + rect.bottom) // 2, w, h)
+        if el.CachedControlType == uia.UIA_ButtonControlTypeId:
+            buttons.append(disp)
+        elif el.CachedControlType == uia.UIA_EditControlTypeId and not name and not desc:
+            unlabeled_edits.append(disp)
+
+    # 1. If an unlabeled Edit sits on the same horizontal row next to a Button, click inside that Edit next to the button
+    for edit in unlabeled_edits:
+        for btn in buttons:
+            if abs(edit.y - btn.y) <= 24 and abs(edit.x - btn.x) <= max(260, (edit.width + btn.width)):
+                return (edit.x, btn.y)
+
+    # 2. Otherwise locate the anchor button adjacent to the unlabeled search box and offset horizontally from it
+    if not buttons:
+        return None
+    env_offset = os.environ.get("CUEPOINT_RB_SEARCH_OFFSET_X")
+    resolved_offset = int(offset_x if offset_x is not None else (int(env_offset) if env_offset else 72))
+    named_candidates = [
+        b for b in buttons if any(w in b.name.casefold() or w in b.description for w in SEARCH_BUTTON_WORDS)
+    ]
+    anchor_btn = named_candidates[0] if named_candidates else max(buttons, key=lambda b: (b.y, b.x))
+    btn_left = anchor_btn.x - anchor_btn.width // 2
+    btn_right = anchor_btn.x + anchor_btn.width // 2
+    target_x = (btn_right + resolved_offset) if resolved_offset >= 0 else (btn_left + resolved_offset)
+    return (int(target_x), int(anchor_btn.y))
+
+
+def _focus_collection_search_by_button(hwnd, *, click_fn=_click_screen_point) -> tuple[int, int] | None:
+    """Use Windows UI Automation to find the button bordering Rekordbox's search box and click next to it."""
+    if os.name != "nt" or not hwnd:
+        return None
+    try:
+        import comtypes
+        from comtypes.client import CreateObject, GetModule
+
+        comtypes.CoInitialize()
+        try:
+            uia = GetModule("UIAutomationCore.dll")
+            automation = CreateObject(uia.CUIAutomation, interface=uia.IUIAutomation)
+            point = _find_search_field_point_near_button(automation, uia, hwnd)
+            if point and click_fn(point[0], point[1]):
+                return point
+        finally:
+            comtypes.CoUninitialize()
+    except Exception as exc:
+        LOGGER.debug("Adjacent-button search focus skipped: %s", exc)
+    return None
+
+
 def send_track_to_rekordbox(
     action,
     query,
@@ -554,6 +666,7 @@ def send_track_to_rekordbox(
     window_fn=_rekordbox_window,
     clipboard_fn=_set_clipboard_text,
     focus_fn=_focus_window,
+    search_box_fn=None,
     key_sender=_send_combo,
     type_sender=_type_unicode,
     sleep_fn=time.sleep,
@@ -581,7 +694,10 @@ def send_track_to_rekordbox(
         }
     focus_fn(hwnd)
     sleep_fn(0.25)
-    key_sender("alt", "f")
+    box_finder = search_box_fn if search_box_fn is not None else _focus_collection_search_by_button
+    clicked_point = box_finder(hwnd)
+    if not clicked_point:
+        key_sender("alt", "f")
     sleep_fn(0.12)
     key_sender("ctrl", "a")
     key_sender("back")
@@ -604,7 +720,7 @@ def send_track_to_rekordbox(
         key_sender("shift", "right")
     label = f"In Rekordbox gesucht & an Deck {deck} (A/B) gesendet" if deck else "In Rekordbox gesucht"
     emit_log("INFO", "REKORDBOX_UIA", f"transport_{action}", f"{label}", deck=deck)
-    return {
+    result = {
         "ok": True,
         "reason": "sent",
         "action": action,
@@ -614,3 +730,6 @@ def send_track_to_rekordbox(
         "copied": copied,
         "message": f"{label}: {clean_query}",
     }
+    if clicked_point:
+        result["searchClickPoint"] = list(clicked_point)
+    return result

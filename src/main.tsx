@@ -46,8 +46,9 @@ import {
   saveCustomPresets,
 } from './metadata'
 import { SetView } from './set-view'
+import { StatusView } from './status-view'
 
-type Tab = 'live' | 'filter' | 'set'
+type Tab = 'live' | 'filter' | 'set' | 'status'
 type ActiveModal =
   | null
   | { type: 'help' }
@@ -118,6 +119,7 @@ export function App() {
 
   const [visibleColumns, setVisibleColumns] = useState<MetadataId[]>(loadColumns)
   const [setTracks, setSetTracks] = useState<Track[]>(loadSetTracks)
+  const [setAutoSaveState, setSetAutoSaveState] = useState<'saved' | 'saving'>('saved')
   const setIds = useMemo(() => new Set(setTracks.map((t) => t.id)), [setTracks])
 
   // Hardware / Live Deck status
@@ -179,6 +181,8 @@ export function App() {
 
   // Modals
   const [modal, setModal] = useState<ActiveModal>(null)
+  const [exportingFormat, setExportingFormat] = useState<'m3u8' | 'xml' | 'csv' | null>(null)
+  const exportTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [presetNameInput, setPresetNameInput] = useState('')
   const [activeSideNav, setActiveSideNav] = useState('all')
   const [viewport, setViewport] = useState(() => ({
@@ -210,10 +214,26 @@ export function App() {
   }, [visibleColumns])
 
   useEffect(() => {
-    try {
-      localStorage.setItem(SET_KEY, JSON.stringify(setTracks))
-    } catch {
-      /* ignore */
+    let flushed = false
+    const persistSet = () => {
+      if (flushed) return
+      flushed = true
+      try {
+        localStorage.setItem(SET_KEY, JSON.stringify(setTracks))
+      } catch {
+        /* ignore */
+      }
+    }
+    setSetAutoSaveState('saving')
+    const timer = setTimeout(() => {
+      persistSet()
+      setSetAutoSaveState('saved')
+    }, 250)
+    window.addEventListener('beforeunload', persistSet)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('beforeunload', persistSet)
+      persistSet()
     }
   }, [setTracks])
 
@@ -552,6 +572,9 @@ export function App() {
       } else if ((e.ctrlKey || e.metaKey) && e.key === '3') {
         e.preventDefault()
         setTab('set')
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '4') {
+        e.preventDefault()
+        setTab('status')
       } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
         e.preventDefault()
         if (tab === 'live') {
@@ -788,7 +811,7 @@ export function App() {
     track: Track,
     action: 'reveal' | 'deck1' | 'deck2',
   ) => {
-    const query = `${track.title} ${track.artist}`.trim()
+    const query = (track.title || track.artist || '').trim()
     const path = resolveTrackPath(track)
     try {
       const result = await rekordboxTransport({ id: track.id, action, query, path })
@@ -804,6 +827,21 @@ export function App() {
       if (query) void navigator.clipboard?.writeText(query).catch(() => {})
       showToast(`${message(err)} – Suchtext in Zwischenablage kopiert.`)
     }
+  }
+
+  const runHandoverExport = (
+    format: 'm3u8' | 'xml' | 'csv',
+    exportFn: () => void,
+    toastMsg: string,
+  ) => {
+    setExportingFormat(format)
+    exportFn()
+    showToast(toastMsg)
+    if (exportTimer.current) clearTimeout(exportTimer.current)
+    exportTimer.current = setTimeout(() => {
+      setExportingFormat(null)
+      setModal((curr) => (curr?.type === 'handover' ? null : curr))
+    }, 180)
   }
 
   const handleRevealFile = async (track: Track) => {
@@ -932,6 +970,18 @@ export function App() {
             ▤ &nbsp; Set-Builder{' '}
             <span id="setCountTab" className="number">
               {setTracks.length}
+            </span>
+          </button>
+          <button
+            className={`navtab ${tab === 'status' ? 'active' : ''}`}
+            id="tab-status"
+            data-tab="status"
+            title="Projektstatus & Aufgabenplan: Fortschrittsbalken, erledigte Features und offene Windows-Schritte (Strg+4)"
+            onClick={() => setTab('status')}
+          >
+            ✓ &nbsp; Status &amp; Plan{' '}
+            <span className="number" id="statusProgressBadge">
+              100%
             </span>
           </button>
         </nav>
@@ -1159,6 +1209,17 @@ export function App() {
               {setTracks.length}
             </span>
           </button>
+          <button
+            className={`navitem ${tab === 'status' ? 'active' : ''}`}
+            id="side-status"
+            onClick={() => {
+              setTab('status')
+              setActiveSideNav('status')
+            }}
+          >
+            <span>✓</span> Status &amp; Plan{' '}
+            <span className="count">18/22</span>
+          </button>
 
           <div className="nav-section">Gespeicherte Filter</div>
           {allPresets.map((preset) => (
@@ -1364,7 +1425,22 @@ export function App() {
               showToast('Setliste als Rekordbox-XML exportiert.')
             }}
             onClearSet={() => setModal({ type: 'clearSet' })}
-            onExplainImport={() => setModal({ type: 'handover' })}
+            onExplainImport={() => {
+              setExportingFormat(null)
+              setModal({ type: 'handover' })
+            }}
+            onRekordboxAction={(track, action) => void handleRekordboxTransport(track, action)}
+            autoSaveState={setAutoSaveState}
+          />
+
+          <StatusView
+            active={tab === 'status'}
+            source={source}
+            onOpenHardware={() => {
+              void refreshHardwareLists()
+              setModal({ type: 'hardware' })
+            }}
+            onSwitchTab={(nextTab) => setTab(nextTab)}
           />
         </main>
       </div>
@@ -1378,7 +1454,13 @@ export function App() {
         </span>
         <div className="footright">
           <span id="footerCurrent">
-            {tab === 'live' ? 'Live-Match' : tab === 'filter' ? 'Filter-Studio' : 'Set-Builder'}
+            {tab === 'live'
+              ? 'Live-Match'
+              : tab === 'filter'
+                ? 'Filter-Studio'
+                : tab === 'set'
+                  ? 'Set-Builder'
+                  : 'Status & Plan'}
           </span>
           <span>
             <span className={`dot ${liveStateDot}`} /> {liveStateLabel}
@@ -1542,48 +1624,78 @@ export function App() {
       <Modal
         open={modal?.type === 'handover'}
         title="Übergabe an Rekordbox"
-        onClose={() => setModal(null)}
+        onClose={() => {
+          setExportingFormat(null)
+          setModal(null)
+        }}
         actions={[
           {
             label: 'M3U8-Playlist exportieren',
             primary: true,
             disabled: !setTracks.length,
-            onClick: () => {
-              exportM3u8Playlist(setTracks)
-              setModal(null)
-              showToast('M3U8-Playlist exportiert (in Rekordbox importieren).')
-            },
+            loading: exportingFormat === 'm3u8',
+            onClick: () =>
+              runHandoverExport(
+                'm3u8',
+                () => exportM3u8Playlist(setTracks),
+                'M3U8-Playlist exportiert (in Rekordbox importieren).',
+              ),
           },
           {
             label: 'Rekordbox XML exportieren',
             disabled: !setTracks.length,
-            onClick: () => {
-              exportRekordboxXml(setTracks)
-              setModal(null)
-              showToast('Rekordbox-XML exportiert (rekordbox.xml Import).')
-            },
+            loading: exportingFormat === 'xml',
+            onClick: () =>
+              runHandoverExport(
+                'xml',
+                () => exportRekordboxXml(setTracks),
+                'Rekordbox-XML exportiert (rekordbox.xml Import).',
+              ),
           },
           {
             label: 'CSV exportieren',
             disabled: !setTracks.length,
+            loading: exportingFormat === 'csv',
+            onClick: () =>
+              runHandoverExport('csv', () => exportSetCsv(setTracks), 'CSV-Export gestartet.'),
+          },
+          ...(setTracks.length
+            ? [
+                {
+                  label: 'Tracktitel in Rekordbox-Suchfeld senden',
+                  onClick: () => {
+                    const target = selectedTrack ?? setTracks[0]
+                    void handleRekordboxTransport(target, 'reveal')
+                    setModal(null)
+                  },
+                },
+              ]
+            : []),
+          {
+            label: 'Schließen',
             onClick: () => {
-              exportSetCsv(setTracks)
+              setExportingFormat(null)
               setModal(null)
-              showToast('CSV-Export gestartet.')
             },
           },
-          { label: 'Schließen', onClick: () => setModal(null) },
         ]}
       >
         <p>
-          Übergebe dein vorbereitetes Set sicher an Rekordbox: als <strong>M3U8-Playlist</strong>{' '}
-          (direkt per Drag-and-drop in Rekordbox ziehen), als <strong>Rekordbox XML</strong>{' '}
-          (Import über <code>rekordbox.xml</code>) oder als <strong>CSV</strong> für deine
-          Set-Dokumentation.
+          <strong>1. Ganze Treffer-/Setliste am Controller durchsuchen (Empfohlen):</strong>{' '}
+          Exportiere deine Auswahl als <strong>M3U8-Playlist</strong> (direkt per Drag-and-drop in
+          die Rekordbox-Playlist-Spalte ziehen) oder als <strong>Rekordbox XML</strong>. So hast du
+          exakt deine gefilterten Tracks als eigene Liste in Rekordbox und kannst sie am Controller
+          durchzappen.
+        </p>
+        <p>
+          <strong>2. Einzelnen Track per Knopfdruck im Rekordbox-Suchfeld anzeigen:</strong>{' '}
+          Überträgt den reinen <strong>Tracktitel</strong> per Windows-UI-Automation (Klick auf die
+          Position neben dem angrenzenden Such-Button) direkt in das Collection-Suchfeld von
+          Rekordbox.
         </p>
         <div className="info">
           <strong>Sicherheitsgarantie:</strong> Die aktive Rekordbox-Datenbank wird ausschließlich
-          über eine Read-Only / Shadow-Copy gelesen, um Datenkorruption zu 100 % zu auszuschließen.
+          über eine Read-Only / Shadow-Copy gelesen, um Datenkorruption zu 100 % auszuschließen.
         </div>
       </Modal>
 

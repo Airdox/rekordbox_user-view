@@ -486,6 +486,8 @@ describe('App (main.tsx)', () => {
     fireEvent.click(document.querySelector('#explainImport')!)
     fireEvent.click(within(document.querySelector('.modal')! as HTMLElement).getByText('CSV exportieren'))
     fireEvent.click(document.querySelector('#explainImport')!)
+    fireEvent.click(within(document.querySelector('.modal')! as HTMLElement).getByText('Tracktitel in Rekordbox-Suchfeld senden'))
+    fireEvent.click(document.querySelector('#explainImport')!)
     fireEvent.click(within(document.querySelector('.modal')! as HTMLElement).getByText('Schließen'))
 
     const removeBtns = Array.from(document.querySelectorAll('#setList button'))
@@ -575,7 +577,7 @@ describe('App (main.tsx)', () => {
     await waitFor(() => {
       expect(document.querySelector('#toast')?.textContent).toMatch(/Rekordbox ist nicht geöffnet/i)
     })
-    expect(writeText).toHaveBeenCalledWith('Acid Horizon Klara')
+    expect(writeText).toHaveBeenCalledWith('Acid Horizon')
 
     // revealFile omitted/false branch, then true branch from find modal
     fireEvent.click(liveInspector.getByRole('button', { name: /Details/i }))

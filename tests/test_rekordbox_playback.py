@@ -245,3 +245,88 @@ def test_send_track_to_rekordbox_and_core_transport(monkeypatch):
         assert res_direct == {"ok": True, "action": "reveal", "query": "Manual Search", "path": "D:/music/x.aiff"}
     finally:
         core.library.close()
+
+    # Test adjacent-button coordinate calculation & mouse click for Rekordbox's unlabeled Collection search box
+    class FakeRect:
+        def __init__(self, left, top, right, bottom):
+            self.left, self.top, self.right, self.bottom = left, top, right, bottom
+
+    class FakeElement:
+        def __init__(self, ctrl_type, name, help_text, rect):
+            self.CachedControlType = ctrl_type
+            self.CachedName = name
+            self.CachedHelpText = help_text
+            self.CachedBoundingRectangle = rect
+
+    class FakeNodeList:
+        def __init__(self, items):
+            self._items = items
+            self.Length = len(items)
+
+        def GetElement(self, idx):
+            return self._items[idx]
+
+    class FakeUIA:
+        UIA_NamePropertyId = 1
+        UIA_HelpTextPropertyId = 2
+        UIA_ControlTypePropertyId = 3
+        UIA_BoundingRectanglePropertyId = 4
+        UIA_ButtonControlTypeId = 50000
+        UIA_EditControlTypeId = 50004
+        TreeScope_Descendants = 4
+
+    class FakeAutomation:
+        def __init__(self, items):
+            self._items = items
+
+        def ElementFromHandle(self, hwnd):
+            return self
+
+        def CreateCacheRequest(self):
+            class _Cache:
+                def AddProperty(self, p):
+                    pass
+
+            return _Cache()
+
+        def CreatePropertyCondition(self, prop, val):
+            return (prop, val)
+
+        def CreateOrCondition(self, a, b):
+            return ("or", a, b)
+
+        def FindAllBuildCache(self, scope, cond, cache):
+            return FakeNodeList(self._items)
+
+    # Case 1: Unlabeled Edit sits directly beside a Button on the same row
+    auto_with_edit = FakeAutomation([
+        FakeElement(FakeUIA.UIA_ButtonControlTypeId, "", "", FakeRect(900, 420, 930, 444)),
+        FakeElement(FakeUIA.UIA_EditControlTypeId, "", "", FakeRect(934, 420, 1120, 444)),
+    ])
+    pt_edit = rbl._find_search_field_point_near_button(auto_with_edit, FakeUIA, 999)
+    assert pt_edit == ((934 + 1120) // 2, (420 + 444) // 2)
+
+    # Case 2: Only the adjacent Search Button is exposed in UIA (no Edit control); offset next to button is used
+    auto_btn_only = FakeAutomation([
+        FakeElement(FakeUIA.UIA_ButtonControlTypeId, "Search", "Filter", FakeRect(880, 420, 910, 444)),
+    ])
+    pt_btn = rbl._find_search_field_point_near_button(auto_btn_only, FakeUIA, 999, offset_x=60)
+    assert pt_btn == (910 + 60, (420 + 444) // 2)
+
+    # Case 3: send_track_to_rekordbox with search_box_fn clicking next to the adjacent button (skips alt+f fallback)
+    clicked_keys = []
+    res_adj = rbl.send_track_to_rekordbox(
+        "reveal",
+        "Afterimage",
+        window_fn=lambda: 999,
+        clipboard_fn=lambda text: True,
+        focus_fn=lambda hwnd: True,
+        search_box_fn=lambda hwnd: (970, 432),
+        key_sender=lambda *keys: clicked_keys.append(keys) or True,
+        sleep_fn=lambda _: None,
+    )
+    assert res_adj["ok"] is True
+    assert res_adj["searchClickPoint"] == [970, 432]
+    assert ("alt", "f") not in clicked_keys
+    assert ("ctrl", "a") in clicked_keys
+

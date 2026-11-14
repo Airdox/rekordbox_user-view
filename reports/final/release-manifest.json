@@ -6,7 +6,8 @@
   "referenceCommitSha": "88e8bdf66b2d731961924e85494307b7f3572bc0",
   "referenceCommitDate": "2026-11-13 00:00:07 +0100",
   "reconstructionCommitSha": "workspace-directory",
-  "generatedAtUtc": "2026-11-13T00:02:00Z",
+  "generatedAtUtc": "2026-11-14T04:14:00Z",
+  "defaultDatabasePath": "E:\\PIONEER\\Master",
   "overallStatus": "PARTIAL_SUCCESS",
   "windowsRelease": {
     "targetArtifact": "release/Cuepoint-1.1.0-Windows-x64.exe",
@@ -20,23 +21,32 @@
     "frontendUnitAndV8Coverage": {
       "status": "PASS",
       "filesPassed": 4,
-      "testsPassed": 27,
+      "testsPassed": 29,
       "testsFailed": 0,
-      "statementsPct": 97.0,
-      "branchesPct": 92.1,
-      "functionsPct": 97.01,
-      "linesPct": 98.33,
-      "criticalModules100Pct": ["src/api.ts", "src/camelot-wheel.tsx", "src/metadata.ts", "src/components.tsx"]
+      "statementsPct": 97.1,
+      "branchesPct": 91.95,
+      "functionsPct": 97.15,
+      "linesPct": 98.4,
+      "criticalModules100Pct": [
+        "src/api.ts",
+        "src/camelot-wheel.tsx",
+        "src/metadata.ts",
+        "src/components.tsx",
+        "src/status-view.tsx"
+      ]
     },
     "electronMainPreloadTests": {
       "status": "PASS",
-      "testsPassed": 4,
+      "testsPassed": 5,
       "testsFailed": 0,
-      "durationMs": 213.38
+      "statementsPct": 100.0,
+      "branchesPct": 92.78,
+      "functionsPct": 100.0,
+      "linesPct": 100.0
     },
     "pythonBackendSuites": {
       "status": "PASS",
-      "unitLivePlaybackFilterCoverage": { "passed": 24, "skipped": 1, "failed": 0 },
+      "unitLivePlaybackFilterCoverage": { "passed": 25, "skipped": 1, "failed": 0 },
       "combinatorialStress": {
         "cases": 5000,
         "matchedTracksVerified": 2066942,
@@ -58,8 +68,12 @@
       "effectiveScorePct": 88.83
     },
     "strykerFrontendMutation": {
-      "status": "BLOCKED",
-      "reason": "@stryker-mutator/core not installed in container environment"
+      "status": "PASS",
+      "scorePct": 96.49,
+      "killed": 55,
+      "survived": 2,
+      "timeout": 0,
+      "thresholdPct": 95.0
     },
     "pythonBranchCoverage": {
       "status": "BLOCKED",

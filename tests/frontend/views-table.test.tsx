@@ -6,6 +6,7 @@ import { HardwareModal } from '../../src/hardware-modal'
 import { LiveView, liveSortToCascade } from '../../src/live-view'
 import { builtInPresets, defaultColumns, type MetadataId, type RuleGroup } from '../../src/metadata'
 import { SetView } from '../../src/set-view'
+import { StatusView } from '../../src/status-view'
 import { TrackTable } from '../../src/track-table'
 
 const sampleTracks: Track[] = [
@@ -1028,5 +1029,60 @@ describe('set-view.tsx & hardware-modal.tsx', () => {
       )
       expect(screen.getByText(text)).toBeInTheDocument()
     }
+  })
+
+  it('StatusView renders completion progress bars, filters requirements, and triggers navigation actions', () => {
+    const onOpenHardware = vi.fn()
+    const onSwitchTab = vi.fn()
+    const { container, rerender } = render(
+      <StatusView
+        active
+        source={{
+          path: 'E:\\PIONEER\\Master\\master.db',
+          kind: 'Master',
+          total: 15500,
+          genres: 23,
+          bpmBounds: [60, 180],
+          withKey: 15450,
+        }}
+        onOpenHardware={onOpenHardware}
+        onSwitchTab={onSwitchTab}
+      />,
+    )
+
+    expect(container.querySelector('#codeCompletionPct')?.textContent).toContain('100 %')
+    expect(container.querySelector('#verifiedCompletionPct')?.textContent).toContain('82 %')
+    expect(screen.getByTestId('req-item-F-01')).toBeInTheDocument()
+    expect(screen.getByTestId('req-item-F-04')).toBeInTheDocument()
+
+    // Filter to done only
+    fireEvent.click(container.querySelector('#statusFilterDone')!)
+    expect(screen.getByTestId('req-item-F-01')).toBeInTheDocument()
+    expect(screen.queryByTestId('req-item-F-04')).not.toBeInTheDocument()
+
+    // Filter to windows_pending only
+    fireEvent.click(container.querySelector('#statusFilterPending')!)
+    expect(screen.queryByTestId('req-item-F-01')).not.toBeInTheDocument()
+    expect(screen.getByTestId('req-item-F-04')).toBeInTheDocument()
+
+    // Reset filter to all
+    fireEvent.click(container.querySelector('#statusFilterAll')!)
+    expect(screen.getByTestId('req-item-F-01')).toBeInTheDocument()
+
+    // Quick navigation buttons
+    fireEvent.click(screen.getByRole('button', { name: /Live-Match öffnen/i }))
+    expect(onSwitchTab).toHaveBeenCalledWith('live')
+    fireEvent.click(screen.getByRole('button', { name: /Filter-Studio öffnen/i }))
+    expect(onSwitchTab).toHaveBeenCalledWith('filter')
+    fireEvent.click(screen.getByRole('button', { name: /Set-Builder öffnen/i }))
+    expect(onSwitchTab).toHaveBeenCalledWith('set')
+    fireEvent.click(screen.getByRole('button', { name: /Hardware-Dialog/i }))
+    expect(onOpenHardware).toHaveBeenCalledTimes(1)
+
+    // Rerender inactive with null source
+    rerender(
+      <StatusView active={false} source={null} onOpenHardware={onOpenHardware} onSwitchTab={onSwitchTab} />,
+    )
+    expect(screen.getByText(/Synthetische Demo-Bibliothek/i)).toBeInTheDocument()
   })
 })

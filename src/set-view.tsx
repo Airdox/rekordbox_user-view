@@ -15,6 +15,8 @@ type SetViewProps = {
   onExportXml?: () => void
   onExplainImport: () => void
   onFindTracks: () => void
+  onRekordboxAction?: (track: Track, action: 'reveal' | 'deck1' | 'deck2') => void
+  autoSaveState?: 'saved' | 'saving'
 }
 
 export function SetView({
@@ -30,6 +32,8 @@ export function SetView({
   onExportXml,
   onExplainImport,
   onFindTracks,
+  onRekordboxAction,
+  autoSaveState = 'saved',
 }: SetViewProps) {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
@@ -63,7 +67,10 @@ export function SetView({
               <div className="kicker">Wiedergabeliste / Vorbereitung</div>
               <h2>Mein nächstes Set</h2>
               <div className="hint">
-                Reihenfolge ändern, Übergänge prüfen, als Datei exportieren
+                Reihenfolge ändern, Übergänge prüfen, als Datei exportieren{' '}
+                <span id="setAutoSaveBadge" data-testid="set-autosave-status">
+                  {autoSaveState === 'saving' ? '· Auto-Save speichert …' : '· Auto-Save aktiv'}
+                </span>
               </div>
             </div>
             <div className="flex">
@@ -157,6 +164,15 @@ export function SetView({
                         <KeyBadge value={t.key} reference={referenceKey} />
                       </div>
                       <div className="controls" onClick={(e) => e.stopPropagation()}>
+                        {onRekordboxAction && (
+                          <button
+                            onClick={() => onRekordboxAction(t, 'reveal')}
+                            title="Tracktitel in Rekordbox-Suchfeld übertragen (UIA)"
+                            aria-label={`${t.title} in Rekordbox suchen`}
+                          >
+                            ↗
+                          </button>
+                        )}
                         <button
                           onClick={() => onMoveTrack(i, i - 1)}
                           disabled={i === 0}

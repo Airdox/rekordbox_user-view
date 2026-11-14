@@ -110,6 +110,24 @@ describe('components.tsx', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Speichern' }))
     expect(onSave).toHaveBeenCalledTimes(1)
     expect(onClose).toHaveBeenCalledTimes(3)
+
+    // Action with loading: true renders indeterminate progress spinner and sets aria-busy
+    rerender(
+      <Modal
+        open
+        title="Export Dialog"
+        onClose={onClose}
+        actions={[
+          { label: 'M3U8-Playlist exportieren', primary: true, loading: true, onClick: onSave },
+        ]}
+      >
+        <div>Exportiere …</div>
+      </Modal>,
+    )
+    expect(screen.getByTestId('export-spinner')).toBeInTheDocument()
+    expect(screen.getByTestId('export-spinner')).toHaveAttribute('role', 'progressbar')
+    expect(screen.getByRole('button', { name: /M3U8-Playlist exportieren/i })).toHaveAttribute('aria-busy', 'true')
+    expect(screen.getByRole('button', { name: /M3U8-Playlist exportieren/i })).toBeDisabled()
   })
 })
 

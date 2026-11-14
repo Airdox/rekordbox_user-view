@@ -110,7 +110,13 @@ export function Empty({ icon, title, children }: { icon?: ReactNode; title: stri
   )
 }
 
-export type ModalAction = { label: string; primary?: boolean; disabled?: boolean; onClick?: () => void }
+export type ModalAction = {
+  label: string
+  primary?: boolean
+  disabled?: boolean
+  loading?: boolean
+  onClick?: () => void
+}
 
 export function Modal({
   open,
@@ -160,13 +166,22 @@ export function Modal({
               key={action.label}
               type="button"
               className={action.primary ? 'primary' : ''}
-              disabled={action.disabled}
+              disabled={action.disabled || action.loading}
+              aria-busy={action.loading ? 'true' : undefined}
               onClick={() => {
                 action.onClick?.()
                 if (!action.onClick) onClose()
               }}
             >
-              {action.label}
+              {action.loading && (
+                <span
+                  className="btn-spinner"
+                  role="progressbar"
+                  aria-label="Export läuft"
+                  data-testid="export-spinner"
+                />
+              )}
+              <span>{action.label}</span>
             </button>
           ))}
         </div>

@@ -157,6 +157,31 @@ export const rekordboxTransport = (params: {
   path?: string
 }) => request<TransportResult>('rekordboxTransport', params)
 
+export type BridgeStatus = {
+  path: string
+  exists: boolean
+  bytes: number
+}
+
+export type BridgeWriteResult = {
+  ok: boolean
+  path: string
+  playlistName: string
+  trackCount: number
+  playlists: { name: string; count: number }[]
+  updatedAt: string
+}
+
+export const getBridgeInfo = (path?: string) =>
+  request<BridgeStatus>('bridgeInfo', path ? { path } : {})
+
+export const writeBridgeXml = (params: {
+  tracks: Track[]
+  playlistName?: string
+  path?: string
+  secondaryPlaylists?: Record<string, Track[]>
+}) => request<BridgeWriteResult>('writeBridgeXml', params)
+
 export const revealFile = (path: string): Promise<boolean> =>
   window.cuepoint?.revealFile
     ? window.cuepoint.revealFile(path)

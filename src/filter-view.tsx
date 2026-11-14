@@ -55,6 +55,7 @@ type FilterViewProps = {
   onFindRekordbox: (track: Track) => void
   onRekordboxAction?: (track: Track, action: 'reveal' | 'deck1' | 'deck2') => void
   onExportFilteredM3u8?: (tracks: Track[]) => void
+  onSyncFilterToBridge?: (tracks: Track[]) => void
   setTracks: Track[]
   setIds: Set<string>
   onOpenSetBuilder: () => void
@@ -96,6 +97,7 @@ export function FilterView({
   onFindRekordbox,
   onRekordboxAction,
   onExportFilteredM3u8,
+  onSyncFilterToBridge,
   setTracks,
   setIds,
   onOpenSetBuilder,
@@ -417,6 +419,17 @@ export function FilterView({
           >
             ↓ M3U8
           </button>
+          {onSyncFilterToBridge && (
+            <button
+              className="primary"
+              id="syncFilterBridge"
+              disabled={rows.length === 0}
+              title="Schreibt alle gefilterten Treffer direkt in deine feste Rekordbox Bridge-XML (1× verknüpft, danach immer sofort per Reload aktuell)"
+              onClick={() => onSyncFilterToBridge(rows)}
+            >
+              ⚡ An Rekordbox
+            </button>
+          )}
         </div>
 
         <div className="results-sub" id="filterSummary">

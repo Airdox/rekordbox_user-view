@@ -36,7 +36,7 @@
     {
       "gate": "07_frontend_v8_coverage",
       "status": "PASS",
-      "detail": "Lines=97.47%, Stmts=96.23%, Funcs=95.68%, Branches=91.66%"
+      "detail": "Lines=97.59%, Stmts=96.41%, Funcs=95.85%, Branches=91.9%"
     },
     {
       "gate": "08_electron_c8_coverage",
@@ -56,7 +56,7 @@
     {
       "gate": "11_python_backend_tests",
       "status": "PASS",
-      "detail": "Python tests: 25 passed, 1 skipped, 0 failed in 21.25s"
+      "detail": "Python tests: 26 passed, 1 skipped, 0 failed in 21.75s"
     }
   ]
 }

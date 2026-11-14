@@ -543,6 +543,7 @@ describe('filter-view.tsx', () => {
     const onFindRekordbox = vi.fn()
     const onRekordboxAction = vi.fn()
     const onExportFilteredM3u8 = vi.fn()
+    const onSyncFilterToBridge = vi.fn()
 
     const { container, rerender } = render(
       <FilterView
@@ -584,6 +585,7 @@ describe('filter-view.tsx', () => {
         onFindRekordbox={onFindRekordbox}
         onRekordboxAction={onRekordboxAction}
         onExportFilteredM3u8={onExportFilteredM3u8}
+        onSyncFilterToBridge={onSyncFilterToBridge}
         setTracks={fiveSetTracks}
         setIds={new Set(['t1'])}
         onOpenSetBuilder={onOpenSetBuilder}
@@ -628,6 +630,8 @@ describe('filter-view.tsx', () => {
 
     fireEvent.click(container.querySelector('#exportFilterM3u8')!)
     expect(onExportFilteredM3u8).toHaveBeenCalledWith(sampleTracks)
+    fireEvent.click(container.querySelector('#syncFilterBridge')!)
+    expect(onSyncFilterToBridge).toHaveBeenCalledWith(sampleTracks)
 
     // Sort designer open, edit, move up/down, toggle direction, add/remove stage, close
     fireEvent.click(container.querySelector('#toggleSortDesigner')!)
@@ -771,6 +775,7 @@ describe('set-view.tsx & hardware-modal.tsx', () => {
     const onExportM3u8 = vi.fn()
     const onExportXml = vi.fn()
     const onClearSet = vi.fn()
+    const onSyncBridge = vi.fn()
 
     const { rerender } = render(
       <SetView
@@ -784,6 +789,7 @@ describe('set-view.tsx & hardware-modal.tsx', () => {
         onExportCsv={onExportCsv}
         onExportM3u8={onExportM3u8}
         onExportXml={onExportXml}
+        onSyncBridge={onSyncBridge}
         onClearSet={onClearSet}
         onExplainImport={vi.fn()}
       />,
@@ -801,6 +807,8 @@ describe('set-view.tsx & hardware-modal.tsx', () => {
     fireEvent.click(screen.getByLabelText('Solar Drift aus Set entfernen'))
     expect(onRemoveTrack).toHaveBeenCalledWith('t2')
 
+    fireEvent.click(screen.getByRole('button', { name: /An Rekordbox senden/i }))
+    expect(onSyncBridge).toHaveBeenCalledTimes(1)
     fireEvent.click(screen.getByRole('button', { name: /M3U8-Playlist/i }))
     expect(onExportM3u8).toHaveBeenCalledTimes(1)
     fireEvent.click(screen.getByRole('button', { name: /Rekordbox XML/i }))

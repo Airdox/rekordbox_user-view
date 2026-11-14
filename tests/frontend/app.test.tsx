@@ -177,6 +177,24 @@ function makeMockBridge(overrides?: {
           : 'Rekordbox ist nicht geöffnet. Suchtext wurde in die Zwischenablage kopiert.',
       }
     }
+    if (method === 'bridgeInfo') {
+      return {
+        path: 'E:/PIONEER/cuepoint-bridge.xml',
+        exists: false,
+        bytes: 0,
+      }
+    }
+    if (method === 'writeBridgeXml') {
+      const p = (_params ?? {}) as { tracks?: unknown[]; playlistName?: string; path?: string }
+      return {
+        ok: true,
+        path: p.path || 'E:/PIONEER/cuepoint-bridge.xml',
+        playlistName: p.playlistName || 'Cuepoint Auswahl',
+        trackCount: p.tracks?.length ?? 0,
+        playlists: [{ name: p.playlistName || 'Cuepoint Auswahl', count: p.tracks?.length ?? 0 }],
+        updatedAt: '2026-11-14T12:00:00Z',
+      }
+    }
     return true
   })
 
@@ -449,6 +467,13 @@ describe('App (main.tsx)', () => {
       expect(document.querySelectorAll('#view-filter .track-row').length).toBeGreaterThan(0)
     }, { timeout: 4000 })
     fireEvent.click(document.querySelector('#exportFilterM3u8')!)
+    fireEvent.click(document.querySelector('#syncFilterBridge')!)
+    await waitFor(() =>
+      expect(reqSpy).toHaveBeenCalledWith(
+        'writeBridgeXml',
+        expect.objectContaining({ playlistName: 'Cuepoint Filtertreffer' }),
+      ),
+    )
 
     // Save & cancel preset modal via backdrop/Abbrechen, then save via Enter & click saved preset
     fireEvent.click(document.querySelector('#savePreset')!)
@@ -468,17 +493,34 @@ describe('App (main.tsx)', () => {
     const queueOpen = document.querySelector('#queueOpen')
     if (queueOpen) fireEvent.click(queueOpen)
 
-    // SetView actions: move, select track title, remove single item, M3U8/XML/CSV exports, handover modal, clearSet
+    // SetView actions: move, select track title, remove single item, 1-click Bridge sync, M3U8/XML/CSV exports, handover modal, clearSet
     fireEvent.click(document.querySelector('#tab-set')!)
     const viewSet = within(document.querySelector('#view-set')! as HTMLElement)
     const moveDown = viewSet.queryAllByLabelText(/Nach unten/i)
     if (moveDown.length) fireEvent.click(moveDown[0])
     const trackSelectBtn = document.querySelector('#setList .setrow')
     if (trackSelectBtn) fireEvent.click(trackSelectBtn)
+    fireEvent.click(document.querySelector('#syncSetBridge')!)
+    await waitFor(() =>
+      expect(reqSpy).toHaveBeenCalledWith(
+        'writeBridgeXml',
+        expect.objectContaining({ playlistName: 'Cuepoint Setliste' }),
+      ),
+    )
     fireEvent.click(document.querySelector('#exportSetM3u8')!)
     fireEvent.click(document.querySelector('#exportSetXml')!)
     fireEvent.click(document.querySelector('#exportSet')!)
 
+    fireEvent.click(document.querySelector('#explainImport')!)
+    fireEvent.change(document.querySelector('#bridgeXmlPathInput')!, { target: { value: 'E:/PIONEER/my-bridge.xml' } })
+    fireEvent.click(document.querySelector('#copyBridgePath')!)
+    fireEvent.click(within(document.querySelector('.modal')! as HTMLElement).getByText('⚡ In feste Bridge-XML schreiben'))
+    await waitFor(() =>
+      expect(reqSpy).toHaveBeenCalledWith(
+        'writeBridgeXml',
+        expect.objectContaining({ path: 'E:/PIONEER/my-bridge.xml' }),
+      ),
+    )
     fireEvent.click(document.querySelector('#explainImport')!)
     fireEvent.click(within(document.querySelector('.modal')! as HTMLElement).getByText('M3U8-Playlist exportieren'))
     fireEvent.click(document.querySelector('#explainImport')!)

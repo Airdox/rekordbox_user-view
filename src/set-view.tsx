@@ -16,6 +16,8 @@ type SetViewProps = {
   onExplainImport: () => void
   onFindTracks: () => void
   onRekordboxAction?: (track: Track, action: 'reveal' | 'deck1' | 'deck2') => void
+  onSyncBridge?: () => void
+  bridgeBusy?: boolean
   autoSaveState?: 'saved' | 'saving'
 }
 
@@ -33,6 +35,8 @@ export function SetView({
   onExplainImport,
   onFindTracks,
   onRekordboxAction,
+  onSyncBridge,
+  bridgeBusy = false,
   autoSaveState = 'saved',
 }: SetViewProps) {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
@@ -81,8 +85,19 @@ export function SetView({
               >
                 + Tracks suchen
               </button>
+              {onSyncBridge && (
+                <button
+                  className="primary"
+                  id="syncSetBridge"
+                  disabled={tracks.length === 0 || bridgeBusy}
+                  title="Aktualisiert sofort deine feste Rekordbox Bridge-XML mit dieser Setliste (ohne Datei-Download-Dialog)"
+                  onClick={onSyncBridge}
+                >
+                  {bridgeBusy ? 'Speichere …' : '⚡ An Rekordbox senden'}
+                </button>
+              )}
               <button
-                className="primary"
+                className={onSyncBridge ? '' : 'primary'}
                 id="exportSetM3u8"
                 disabled={tracks.length === 0}
                 title="Exportiert deine Setliste als M3U8-Playlist – direkt per Drag-and-drop oder Import in Rekordbox öffnen"

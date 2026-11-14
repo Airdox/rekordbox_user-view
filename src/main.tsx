@@ -23,12 +23,14 @@ import {
   exportM3u8Playlist,
   exportRekordboxXml,
   exportSetCsv,
+  getBridgeInfo,
   message,
   rekordboxTransport,
   relatedKeys,
   request,
   revealFile,
   windowControl,
+  writeBridgeXml,
 } from './api'
 import { KeyBadge, LiveWaveform, Modal } from './components'
 import { FilterView } from './filter-view'
@@ -60,6 +62,7 @@ type ActiveModal =
 
 const COLUMNS_KEY = 'airdox.columns'
 const SET_KEY = 'airdox.setTracks'
+const BRIDGE_PATH_KEY = 'airdox.bridgeXmlPath'
 
 let uidCounter = 100
 const nextUid = () => ++uidCounter
@@ -120,6 +123,14 @@ export function App() {
   const [visibleColumns, setVisibleColumns] = useState<MetadataId[]>(loadColumns)
   const [setTracks, setSetTracks] = useState<Track[]>(loadSetTracks)
   const [setAutoSaveState, setSetAutoSaveState] = useState<'saved' | 'saving'>('saved')
+  const [bridgePath, setBridgePath] = useState<string>(() => {
+    try {
+      return localStorage.getItem(BRIDGE_PATH_KEY) ?? ''
+    } catch {
+      return ''
+    }
+  })
+  const [bridgeBusy, setBridgeBusy] = useState(false)
   const setIds = useMemo(() => new Set(setTracks.map((t) => t.id)), [setTracks])
 
   // Hardware / Live Deck status
@@ -236,6 +247,22 @@ export function App() {
       persistSet()
     }
   }, [setTracks])
+
+  useEffect(() => {
+    try {
+      if (bridgePath) localStorage.setItem(BRIDGE_PATH_KEY, bridgePath)
+    } catch {
+      /* ignore */
+    }
+  }, [bridgePath])
+
+  useEffect(() => {
+    getBridgeInfo(bridgePath || undefined)
+      .then((info) => {
+        if (info?.path && !bridgePath) setBridgePath(info.path)
+      })
+      .catch(() => {})
+  }, [])
 
   const refreshHardwareLists = useCallback(async () => {
     try {
@@ -844,6 +871,40 @@ export function App() {
     }, 180)
   }
 
+  const handleSyncBridge = async (
+    tracks: Track[],
+    playlistName: string,
+    closeHandover = false,
+  ) => {
+    if (!tracks.length) return
+    setBridgeBusy(true)
+    try {
+      const secondaryPlaylists: Record<string, Track[]> = {}
+      const filterRows = filterResults?.rows ?? []
+      if (playlistName !== 'Cuepoint Setliste' && setTracks.length) {
+        secondaryPlaylists['Cuepoint Setliste'] = setTracks
+      }
+      if (playlistName !== 'Cuepoint Filtertreffer' && filterRows.length) {
+        secondaryPlaylists['Cuepoint Filtertreffer'] = filterRows
+      }
+      const res = await writeBridgeXml({
+        tracks,
+        playlistName,
+        path: bridgePath.trim() || undefined,
+        secondaryPlaylists,
+      })
+      if (res?.path) setBridgePath(res.path)
+      showToast(
+        `${res.trackCount} Tracks nach ${basename(res.path) || res.path} geschrieben – in Rekordbox unter "rekordbox xml" auf Reload ↻ klicken.`,
+      )
+      if (closeHandover) setModal(null)
+    } catch (err) {
+      showToast(message(err))
+    } finally {
+      setBridgeBusy(false)
+    }
+  }
+
   const handleRevealFile = async (track: Track) => {
     const path = resolveTrackPath(track)
     if (!path) {
@@ -1392,6 +1453,9 @@ export function App() {
               exportM3u8Playlist(tracks, 'airdox-filter-treffer.m3u8')
               showToast(`${tracks.length} Filter-Treffer als M3U8 exportiert.`)
             }}
+            onSyncFilterToBridge={(tracks) => {
+              void handleSyncBridge(tracks, 'Cuepoint Filtertreffer')
+            }}
             setTracks={setTracks}
             setIds={setIds}
             onOpenSetBuilder={() => setTab('set')}
@@ -1424,6 +1488,10 @@ export function App() {
               exportRekordboxXml(setTracks)
               showToast('Setliste als Rekordbox-XML exportiert.')
             }}
+            onSyncBridge={() => {
+              void handleSyncBridge(setTracks, 'Cuepoint Setliste')
+            }}
+            bridgeBusy={bridgeBusy}
             onClearSet={() => setModal({ type: 'clearSet' })}
             onExplainImport={() => {
               setExportingFormat(null)
@@ -1624,14 +1692,21 @@ export function App() {
       <Modal
         open={modal?.type === 'handover'}
         title="Übergabe an Rekordbox"
+        wide
         onClose={() => {
           setExportingFormat(null)
           setModal(null)
         }}
         actions={[
           {
-            label: 'M3U8-Playlist exportieren',
+            label: '⚡ In feste Bridge-XML schreiben',
             primary: true,
+            disabled: !setTracks.length,
+            loading: bridgeBusy,
+            onClick: () => void handleSyncBridge(setTracks, 'Cuepoint Setliste', true),
+          },
+          {
+            label: 'M3U8-Playlist exportieren',
             disabled: !setTracks.length,
             loading: exportingFormat === 'm3u8',
             onClick: () =>
@@ -1681,21 +1756,57 @@ export function App() {
         ]}
       >
         <p>
-          <strong>1. Ganze Treffer-/Setliste am Controller durchsuchen (Empfohlen):</strong>{' '}
-          Exportiere deine Auswahl als <strong>M3U8-Playlist</strong> (direkt per Drag-and-drop in
-          die Rekordbox-Playlist-Spalte ziehen) oder als <strong>Rekordbox XML</strong>. So hast du
-          exakt deine gefilterten Tracks als eigene Liste in Rekordbox und kannst sie am Controller
-          durchzappen.
+          <strong>Komfort-Lösung: Feste 1-Klick Rekordbox Bridge-XML (einmalig einrichten):</strong>
         </p>
+        <div className="info" style={{ marginBottom: 12 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+            <input
+              id="bridgeXmlPathInput"
+              aria-label="Pfad der festen Rekordbox Bridge-XML"
+              type="text"
+              style={{ flex: 1 }}
+              value={bridgePath}
+              placeholder="E:\PIONEER\cuepoint-bridge.xml"
+              onChange={(e) => setBridgePath(e.target.value)}
+            />
+            <button
+              type="button"
+              className="sm"
+              id="copyBridgePath"
+              onClick={() => {
+                const target = bridgePath.trim() || 'E:\\PIONEER\\cuepoint-bridge.xml'
+                void navigator.clipboard?.writeText(target).catch(() => {})
+                showToast(`Bridge-Pfad kopiert: ${target}`)
+              }}
+            >
+              Pfad kopieren
+            </button>
+          </div>
+          <ol style={{ margin: '4px 0 0 18px', padding: 0, lineHeight: 1.5 }}>
+            <li>
+              In Rekordbox 1× unter <em>Voreinstellungen → Ansicht → Layout</em> den Haken bei{' '}
+              <strong>rekordbox xml</strong> setzen.
+            </li>
+            <li>
+              Unter <em>Voreinstellungen → Erweitert → Datenbank → Imported Library</em> genau diese
+              Datei auswählen.
+            </li>
+            <li>
+              Danach reicht hier oder im Filter-Studio ein Klick auf{' '}
+              <strong>⚡ An Rekordbox senden</strong> – in Rekordbox links nur kurz auf Reload ↻
+              klicken.
+            </li>
+          </ol>
+        </div>
         <p>
-          <strong>2. Einzelnen Track per Knopfdruck im Rekordbox-Suchfeld anzeigen:</strong>{' '}
-          Überträgt den reinen <strong>Tracktitel</strong> per Windows-UI-Automation (Klick auf die
-          Position neben dem angrenzenden Such-Button) direkt in das Collection-Suchfeld von
-          Rekordbox.
+          <strong>Alternative für Einzeltracks live am Controller:</strong>{' '}
+          <code>↗ In Rekordbox</code> überträgt den reinen <strong>Tracktitel</strong> per Windows
+          UI Automation direkt in das Collection-Suchfeld.
         </p>
-        <div className="info">
-          <strong>Sicherheitsgarantie:</strong> Die aktive Rekordbox-Datenbank wird ausschließlich
-          über eine Read-Only / Shadow-Copy gelesen, um Datenkorruption zu 100 % auszuschließen.
+        <div className="hint">
+          <strong>Sicherheitsgarantie:</strong> Die aktive Rekordbox-Datenbank (<code>master.db</code>)
+          wird ausschließlich schreibgeschützt über eine Shadow-Copy gelesen – 0 % Risiko für Cues
+          und Beatgrids.
         </div>
       </Modal>
 

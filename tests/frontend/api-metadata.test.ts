@@ -8,12 +8,14 @@ import {
   exportM3u8Playlist,
   exportRekordboxXml,
   exportSetCsv,
+  getBridgeInfo,
   harmonicTransition,
   message,
   rekordboxTransport,
   relatedKeys,
   request,
   revealFile,
+  writeBridgeXml,
   type Track,
 } from '../../src/api'
 import {
@@ -478,6 +480,53 @@ describe('api.ts', () => {
 
     vi.unstubAllGlobals()
     window.cuepoint = prevCuepoint
+  })
+
+  it('calls getBridgeInfo with and without custom path and invokes writeBridgeXml', async () => {
+    const reqMock = vi
+      .fn()
+      .mockResolvedValueOnce({ path: 'E:\\PIONEER\\cuepoint-bridge.xml', exists: false, bytes: 0 })
+      .mockResolvedValueOnce({ path: 'D:\\custom.xml', exists: true, bytes: 512 })
+      .mockResolvedValueOnce({
+        ok: true,
+        path: 'D:\\custom.xml',
+        playlistName: 'Cuepoint Setliste',
+        trackCount: 1,
+        playlists: [{ name: 'Cuepoint Setliste', count: 1 }],
+        updatedAt: '2026-11-14T19:00:00Z',
+      })
+    window.cuepoint = {
+      request: reqMock,
+      choose: vi.fn(),
+      window: vi.fn(),
+    }
+
+    await expect(getBridgeInfo()).resolves.toEqual({
+      path: 'E:\\PIONEER\\cuepoint-bridge.xml',
+      exists: false,
+      bytes: 0,
+    })
+    expect(reqMock).toHaveBeenCalledWith('bridgeInfo', {})
+
+    await expect(getBridgeInfo('D:\\custom.xml')).resolves.toEqual({
+      path: 'D:\\custom.xml',
+      exists: true,
+      bytes: 512,
+    })
+    expect(reqMock).toHaveBeenCalledWith('bridgeInfo', { path: 'D:\\custom.xml' })
+
+    await expect(
+      writeBridgeXml({
+        tracks: [],
+        playlistName: 'Cuepoint Setliste',
+        path: 'D:\\custom.xml',
+      }),
+    ).resolves.toMatchObject({ ok: true, path: 'D:\\custom.xml' })
+    expect(reqMock).toHaveBeenCalledWith('writeBridgeXml', {
+      tracks: [],
+      playlistName: 'Cuepoint Setliste',
+      path: 'D:\\custom.xml',
+    })
   })
 })
 

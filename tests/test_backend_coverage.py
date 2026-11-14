@@ -1306,3 +1306,70 @@ def test_structured_error_codes_and_ambiguity_reporting():
         core.library.close()
 
 
+def test_xml_bridge_writer_and_core_rpc(tmp_path, monkeypatch):
+    import xml_bridge
+
+    monkeypatch.setenv("CUEPOINT_BRIDGE_XML", str(tmp_path / "cuepoint-bridge.xml"))
+    status_before = xml_bridge.bridge_status()
+    assert status_before["path"].endswith("cuepoint-bridge.xml")
+    assert status_before["exists"] is False
+
+    assert xml_bridge.to_file_uri("") == ""
+    assert xml_bridge.to_file_uri(r"E:\Music\Test & Track.mp3") == "file://localhost/E:/Music/Test%20%26%20Track.mp3"
+
+    core = main_mod.Core()
+    core.replace_library(lib_mod.Library(None, "Master", [
+        {
+            "id": "10",
+            "title": "Acid Horizon",
+            "artist": "Klara",
+            "genre": "Techno",
+            "bpm": 136.0,
+            "key_raw": "8A",
+            "rating": 5,
+            "seconds": 320,
+            "year": 2024,
+            "path": r"E:\Music\Acid Horizon.mp3",
+        },
+        {
+            "id": "20",
+            "title": "Pulse Two",
+            "artist": "Mika",
+            "genre": "House",
+            "bpm": 128.0,
+            "key_raw": "9A",
+            "rating": 4,
+            "seconds": 300,
+            "year": 2023,
+            "path": r"E:\Music\Pulse Two.mp3",
+        },
+    ]))
+    try:
+        info = core.handle("bridgeInfo", {})
+        assert info["exists"] is False
+
+        res = core.handle("writeBridgeXml", {
+            "playlistName": "Cuepoint Setliste",
+            "tracks": [{"id": "10", "title": "Acid Horizon"}],
+            "secondaryPlaylists": {
+                "Cuepoint Filtertreffer": [{"id": "10"}, {"id": "20"}],
+            },
+        })
+        assert res["ok"] is True
+        assert res["trackCount"] == 1
+        out_file = tmp_path / "cuepoint-bridge.xml"
+        assert out_file.is_file()
+        content = out_file.read_text(encoding="utf-8")
+        assert '<DJ_PLAYLISTS Version="1.0.0">' in content
+        assert 'Location="file://localhost/E:/Music/Acid%20Horizon.mp3"' in content
+        assert 'Name="Cuepoint Setliste"' in content
+        assert 'Name="Cuepoint Filtertreffer"' in content
+
+        status_after = core.handle("bridgeInfo", {})
+        assert status_after["exists"] is True
+        assert status_after["bytes"] > 100
+    finally:
+        core.library.close()
+
+
+

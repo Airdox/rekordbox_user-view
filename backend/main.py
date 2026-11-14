@@ -13,6 +13,7 @@ from library import Library, metadata_identity, number, waveform, waveform_with_
 from live import DjLink, SLOTS, interfaces
 from rekordbox_live import RekordboxPlayback, send_track_to_rekordbox
 from sources import usb_sources
+from xml_bridge import bridge_status, write_bridge_xml
 
 
 class Core:
@@ -277,6 +278,41 @@ class Core:
             query = str(params.get("query") or (f"{track['title']} {track['artist']}".strip() if track else "")).strip()
             path = str(params.get("path") or (track.get("path") if track else "") or "")
             return send_track_to_rekordbox(action, query, path)
+        if method == "bridgeInfo":
+            return bridge_status(params.get("path"))
+        if method == "writeBridgeXml":
+            raw_tracks = params.get("tracks") or []
+            enriched: list[dict] = []
+            for item in raw_tracks:
+                if not isinstance(item, dict):
+                    continue
+                tid = item.get("id")
+                detail = self.library.detail(str(tid)) if (self.library and tid) else None
+                merged = {**detail, **item} if detail else dict(item)
+                if detail and not merged.get("path"):
+                    merged["path"] = detail.get("path") or ""
+                enriched.append(merged)
+            playlist_name = str(params.get("playlistName") or "Cuepoint Auswahl").strip() or "Cuepoint Auswahl"
+            extra_raw = params.get("secondaryPlaylists")
+            extra: dict[str, list[dict]] = {}
+            if isinstance(extra_raw, dict):
+                for name, items in extra_raw.items():
+                    if not isinstance(items, list):
+                        continue
+                    extra_enriched: list[dict] = []
+                    for item in items:
+                        if not isinstance(item, dict):
+                            continue
+                        tid = item.get("id")
+                        detail = self.library.detail(str(tid)) if (self.library and tid) else None
+                        extra_enriched.append({**detail, **item} if detail else dict(item))
+                    extra[str(name)] = extra_enriched
+            return write_bridge_xml(
+                enriched,
+                playlist_name=playlist_name,
+                target_path=params.get("path"),
+                secondary_playlists=extra or None,
+            )
         raise CuepointError("SOURCE_UNREADABLE", "Unbekannter Befehl.")
 
 

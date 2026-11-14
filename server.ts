@@ -20,6 +20,8 @@ const ALLOWED_METHODS = new Set([
   'bindMedia',
   'unbindMedia',
   'rekordboxTransport',
+  'bridgeInfo',
+  'writeBridgeXml',
 ])
 
 const rootDir = process.cwd()

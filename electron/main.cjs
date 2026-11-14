@@ -18,6 +18,8 @@ const methods = new Set([
   'bindMedia',
   'unbindMedia',
   'rekordboxTransport',
+  'bridgeInfo',
+  'writeBridgeXml',
 ])
 
 let worker
